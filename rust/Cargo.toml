@@ -1,0 +1,12 @@
+[package]
+name = "flime"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "flime"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+anyhow = "1.0.57"
+flutter_rust_bridge = "1.28.1"
