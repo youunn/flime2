@@ -21,4 +21,3 @@ linter:
     unawaited_futures: true
     unnecessary_parenthesis: true
     use_decorated_box: true
-    sort_pub_dependencies: true

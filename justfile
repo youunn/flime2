@@ -2,12 +2,13 @@ set dotenv-load
 
 rust-input := "rust/src/api.rs"
 rust-output := "rust/src/g.rs"
-dart-output := "lib/input_api.g.dart"
+dart-output := "lib/api/input_api.g.dart"
 c-output := "android/app/src/main/jni/include/bridge.h"
 
 pigeon-input := "pigeons/api.dart"
-pigeon-dart-output := "lib/platform_api.g.dart"
-pigeon-java-output := "android/app/src/main/java/im/nue/flime/Pigeon.java"
+pigeon-dart-output := "lib/api/platform_api.g.dart"
+pigeon-java-output-dir := "android/app/src/main/java/im/nue/flime"
+pigeon-java-output-file := "Pigeon.java"
 pigeon-java-package := "im.nue.flime"
 
 default: gen-br
@@ -30,8 +31,9 @@ gen-br:
     flutter pub run build_runner build
 
 gen-p:
+    [[ -d {{pigeon-java-output-dir}} ]] || mkdir -p {{pigeon-java-output-dir}}
     flutter pub run pigeon \
         --input {{pigeon-input}} \
         --dart_out {{pigeon-dart-output}} \
-        --java_out {{pigeon-java-output}} \
+        --java_out {{pigeon-java-output-dir}}/{{pigeon-java-output-file}} \
         --java_package {{pigeon-java-package}}
