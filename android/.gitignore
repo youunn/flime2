@@ -31,3 +31,4 @@ google-services.json
 
 # Libs
 app/src/main/jniLibs/**/libflime.so
+app/src/main/jniLibs/**/*.a

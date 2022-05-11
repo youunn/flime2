@@ -9,7 +9,7 @@ const _base = 'flime';
 
 final _dylib = io.Platform.isWindows ? '$_base.dll' : 'lib$_base.so';
 
-late final Flime flime = FlimeImpl(
-    io.Platform.isIOS || io.Platform.isMacOS
-        ? DynamicLibrary.executable()
-        : DynamicLibrary.open(_dylib));
+// late final Flime flime = FlimeImpl(
+//     io.Platform.isIOS || io.Platform.isMacOS
+//         ? DynamicLibrary.executable()
+//         : DynamicLibrary.open(_dylib));

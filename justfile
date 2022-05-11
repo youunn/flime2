@@ -11,6 +11,10 @@ pigeon-java-output-dir := "android/app/src/main/java/im/nue/flime"
 pigeon-java-output-file := "Pigeon.java"
 pigeon-java-package := "im.nue.flime"
 
+boost-dir := "~/Projects/thirdParty/Boost-for-Android"
+ndk-root := "~/.local/share/android/sdk/ndk/23.0.7599858"
+boost-version := "1.78.0"
+
 default: gen-br
 
 add-deps:
@@ -37,3 +41,41 @@ gen-p:
         --dart_out {{pigeon-dart-output}} \
         --java_out {{pigeon-java-output-dir}}/{{pigeon-java-output-file}} \
         --java_package {{pigeon-java-package}}
+
+build-boost:
+    # TODO: clone in temp directory
+    cd {{boost-dir}} && \
+    ./build-android.sh {{ndk-root}} --boost={{boost-version}}
+
+    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_filesystem* android/app/src/main/jniLibs/arm64-v8a/libboost_filesystem.a
+    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_regex* android/app/src/main/jniLibs/arm64-v8a/libboost_regex.a
+    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_system* android/app/src/main/jniLibs/arm64-v8a/libboost_system.a
+
+    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_filesystem* android/app/src/main/jniLibs/armeabi-v7a/libboost_filesystem.a
+    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_regex* android/app/src/main/jniLibs/armeabi-v7a/libboost_regex.a
+    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_system* android/app/src/main/jniLibs/armeabi-v7a/libboost_system.a
+
+    cp {{boost-dir}}/build/out/x86/lib/libboost_filesystem* android/app/src/main/jniLibs/x86/libboost_filesystem.a
+    cp {{boost-dir}}/build/out/x86/lib/libboost_regex* android/app/src/main/jniLibs/x86/libboost_regex.a
+    cp {{boost-dir}}/build/out/x86/lib/libboost_system* android/app/src/main/jniLibs/x86/libboost_system.a
+
+    cp {{boost-dir}}/build/out/x86_64/lib/libboost_filesystem* android/app/src/main/jniLibs/x86_64/libboost_filesystem.a
+    cp {{boost-dir}}/build/out/x86_64/lib/libboost_regex* android/app/src/main/jniLibs/x86_64/libboost_regex.a
+    cp {{boost-dir}}/build/out/x86_64/lib/libboost_system* android/app/src/main/jniLibs/x86_64/libboost_system.a
+
+cp-boost:
+    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_filesystem* android/app/src/main/jniLibs/arm64-v8a/libboost_filesystem.a
+    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_regex* android/app/src/main/jniLibs/arm64-v8a/libboost_regex.a
+    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_system* android/app/src/main/jniLibs/arm64-v8a/libboost_system.a
+
+    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_filesystem* android/app/src/main/jniLibs/armeabi-v7a/libboost_filesystem.a
+    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_regex* android/app/src/main/jniLibs/armeabi-v7a/libboost_regex.a
+    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_system* android/app/src/main/jniLibs/armeabi-v7a/libboost_system.a
+
+    cp {{boost-dir}}/build/out/x86/lib/libboost_filesystem* android/app/src/main/jniLibs/x86/libboost_filesystem.a
+    cp {{boost-dir}}/build/out/x86/lib/libboost_regex* android/app/src/main/jniLibs/x86/libboost_regex.a
+    cp {{boost-dir}}/build/out/x86/lib/libboost_system* android/app/src/main/jniLibs/x86/libboost_system.a
+
+    cp {{boost-dir}}/build/out/x86_64/lib/libboost_filesystem* android/app/src/main/jniLibs/x86_64/libboost_filesystem.a
+    cp {{boost-dir}}/build/out/x86_64/lib/libboost_regex* android/app/src/main/jniLibs/x86_64/libboost_regex.a
+    cp {{boost-dir}}/build/out/x86_64/lib/libboost_system* android/app/src/main/jniLibs/x86_64/libboost_system.a
