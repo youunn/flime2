@@ -1,3 +1,6 @@
-#include "api.h"
+#include <rime_api.h>
 
-int get_flag() { return 0; }
+int hello() {
+    static RimeApi s_api = {0};
+    return 5; 
+}

@@ -3,13 +3,14 @@ cmake_minimum_required(VERSION 3.10)
 project(librime_download NONE)
 
 include(ExternalProject)
-ExternalProject_Add(librime
-        GIT_REPOSITORY    https://github.com/rime/librime.git
-        GIT_TAG           master
-        SOURCE_DIR        "${CMAKE_CURRENT_BINARY_DIR}/src"
-        BINARY_DIR        "${CMAKE_CURRENT_BINARY_DIR}/build"
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND     ""
-        INSTALL_COMMAND   ""
-        TEST_COMMAND      ""
-        )
+externalproject_add(
+  librime
+  GIT_REPOSITORY https://github.com/rime/librime.git
+  GIT_TAG 42d5b06456b621b141f3f27fb93c9f9b8551c632
+  SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/src"
+  BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/build"
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+  INSTALL_COMMAND ""
+  TEST_COMMAND ""
+)

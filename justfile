@@ -3,13 +3,15 @@ set dotenv-load
 rust-input := "rust/src/api.rs"
 rust-output := "rust/src/g.rs"
 dart-output := "lib/api/input_api.g.dart"
-c-output := "android/app/src/main/jni/include/bridge.h"
+c-output := "native/include/bridge.h"
 
 pigeon-input := "pigeons/api.dart"
 pigeon-dart-output := "lib/api/platform_api.g.dart"
 pigeon-java-output-dir := "android/app/src/main/java/im/nue/flime"
 pigeon-java-output-file := "Pigeon.java"
 pigeon-java-package := "im.nue.flime"
+
+ffi-output-dir := "lib/api"
 
 boost-dir := "~/Projects/thirdParty/Boost-for-Android"
 ndk-root := "~/.local/share/android/sdk/ndk/23.0.7599858"
@@ -42,40 +44,22 @@ gen-p:
         --java_out {{pigeon-java-output-dir}}/{{pigeon-java-output-file}} \
         --java_package {{pigeon-java-package}}
 
+gen-ffi:
+    [[ -d {{ffi-output-dir}} ]] || mkdir -p {{ffi-output-dir}}
+    flutter pub run ffigen
+
+# TODO: clone and build in temp directory
 build-boost:
-    # TODO: clone in temp directory
-    cd {{boost-dir}} && \
+    cd {{boost-dir}}; \
     ./build-android.sh {{ndk-root}} --boost={{boost-version}}
-
-    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_filesystem* android/app/src/main/jniLibs/arm64-v8a/libboost_filesystem.a
-    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_regex* android/app/src/main/jniLibs/arm64-v8a/libboost_regex.a
-    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_system* android/app/src/main/jniLibs/arm64-v8a/libboost_system.a
-
-    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_filesystem* android/app/src/main/jniLibs/armeabi-v7a/libboost_filesystem.a
-    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_regex* android/app/src/main/jniLibs/armeabi-v7a/libboost_regex.a
-    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_system* android/app/src/main/jniLibs/armeabi-v7a/libboost_system.a
-
-    cp {{boost-dir}}/build/out/x86/lib/libboost_filesystem* android/app/src/main/jniLibs/x86/libboost_filesystem.a
-    cp {{boost-dir}}/build/out/x86/lib/libboost_regex* android/app/src/main/jniLibs/x86/libboost_regex.a
-    cp {{boost-dir}}/build/out/x86/lib/libboost_system* android/app/src/main/jniLibs/x86/libboost_system.a
-
-    cp {{boost-dir}}/build/out/x86_64/lib/libboost_filesystem* android/app/src/main/jniLibs/x86_64/libboost_filesystem.a
-    cp {{boost-dir}}/build/out/x86_64/lib/libboost_regex* android/app/src/main/jniLibs/x86_64/libboost_regex.a
-    cp {{boost-dir}}/build/out/x86_64/lib/libboost_system* android/app/src/main/jniLibs/x86_64/libboost_system.a
+    just cp-boost
 
 cp-boost:
-    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_filesystem* android/app/src/main/jniLibs/arm64-v8a/libboost_filesystem.a
-    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_regex* android/app/src/main/jniLibs/arm64-v8a/libboost_regex.a
-    cp {{boost-dir}}/build/out/arm64-v8a/lib/libboost_system* android/app/src/main/jniLibs/arm64-v8a/libboost_system.a
-
-    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_filesystem* android/app/src/main/jniLibs/armeabi-v7a/libboost_filesystem.a
-    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_regex* android/app/src/main/jniLibs/armeabi-v7a/libboost_regex.a
-    cp {{boost-dir}}/build/out/armeabi-v7a/lib/libboost_system* android/app/src/main/jniLibs/armeabi-v7a/libboost_system.a
-
-    cp {{boost-dir}}/build/out/x86/lib/libboost_filesystem* android/app/src/main/jniLibs/x86/libboost_filesystem.a
-    cp {{boost-dir}}/build/out/x86/lib/libboost_regex* android/app/src/main/jniLibs/x86/libboost_regex.a
-    cp {{boost-dir}}/build/out/x86/lib/libboost_system* android/app/src/main/jniLibs/x86/libboost_system.a
-
-    cp {{boost-dir}}/build/out/x86_64/lib/libboost_filesystem* android/app/src/main/jniLibs/x86_64/libboost_filesystem.a
-    cp {{boost-dir}}/build/out/x86_64/lib/libboost_regex* android/app/src/main/jniLibs/x86_64/libboost_regex.a
-    cp {{boost-dir}}/build/out/x86_64/lib/libboost_system* android/app/src/main/jniLibs/x86_64/libboost_system.a
+    libs=( filesystem regex system ); \
+    abis=( arm64-v8a armeabi-v7a x86 x86_64 ); \
+    for a in "${abis[@]}"; do \
+        [[ -d android/app/src/main/jniLibs/$a ]] || mkdir -p android/app/src/main/jniLibs/$a; \
+        for l in "${libs[@]}"; do \
+            cp {{boost-dir}}/build/out/$a/lib/libboost_$l* android/app/src/main/jniLibs/$a/libboost_$l.a; \
+        done; \
+    done

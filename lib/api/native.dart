@@ -1,15 +1,24 @@
 import 'dart:ffi';
 import 'dart:io' as io;
 
-import 'input_api.g.dart';
+import 'rime_bridge.g.dart';
 
-export 'input_api.g.dart';
+// import 'input_api.g.dart';
 
-const _base = 'flime';
+// export 'input_api.g.dart';
 
-final _dylib = io.Platform.isWindows ? '$_base.dll' : 'lib$_base.so';
+// final _flimeDylib = io.Platform.isWindows ? 'flime.dll' : 'libflime.so';
 
 // late final Flime flime = FlimeImpl(
 //     io.Platform.isIOS || io.Platform.isMacOS
 //         ? DynamicLibrary.executable()
-//         : DynamicLibrary.open(_dylib));
+//         : DynamicLibrary.open(_flimeDylib));
+
+final _rimeBridgeDylib =
+    io.Platform.isWindows ? 'rime_bridge.dll' : 'librime_bridge.so';
+
+late final RimeBridge rimeBridge = RimeBridge(
+  io.Platform.isIOS || io.Platform.isMacOS
+      ? DynamicLibrary.executable()
+      : DynamicLibrary.open(_rimeBridgeDylib),
+);

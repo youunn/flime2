@@ -1,3 +1,4 @@
+import 'package:flime/api/native.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 class App extends StatelessWidget {
@@ -5,15 +6,23 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FluentApp(
+    return const FluentApp(
       home: Center(
-        child: Text(
-          'Hello World!',
-          style: TextStyle(
-            color: Colors.red,
-          ),
-        ),
+        child: NativeDemo(),
       ),
+    );
+  }
+}
+
+class NativeDemo extends StatelessWidget {
+  const NativeDemo({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final text = rimeBridge.hello().toString();
+    return Text(
+      text,
+      style: TextStyle(color: Colors.blue),
     );
   }
 }
