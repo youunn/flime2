@@ -17,6 +17,8 @@ dependencies:
   provider: ^6.0.2
   synchronized: ^3.0.0+2
   fluent_ui: ^3.11.1
+  path_provider: ^2.0.10
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
@@ -33,9 +35,9 @@ flutter:
 
   uses-material-design: true
 
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/rime/
+    - assets/rime/opencc/
 
   # fonts:
   #   - family: Schyler

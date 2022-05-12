@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'dart:io' as io;
+import 'package:ffi/ffi.dart';
 
 import 'rime_bridge.g.dart';
 
@@ -22,3 +23,16 @@ late final RimeBridge rimeBridge = RimeBridge(
       ? DynamicLibrary.executable()
       : DynamicLibrary.open(_rimeBridgeDylib),
 );
+
+extension NativeCast on String {
+  Pointer<Int8> cast() {
+    return toNativeUtf8().cast();
+  }
+}
+
+extension StringCast on Pointer<Int8> {
+  String? toDartString() {
+   final p = cast<Utf8>();
+   return p == nullptr ? null : p .toDartString();
+  }
+}

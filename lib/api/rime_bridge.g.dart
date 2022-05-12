@@ -19,11 +19,73 @@ class RimeBridge {
           lookup)
       : _lookup = lookup;
 
-  int hello() {
-    return _hello();
+  int init() {
+    return _init();
   }
 
-  late final _helloPtr =
-      _lookup<ffi.NativeFunction<ffi.Int32 Function()>>('hello');
-  late final _hello = _helloPtr.asFunction<int Function()>();
+  late final _initPtr =
+      _lookup<ffi.NativeFunction<ffi.Int32 Function()>>('init');
+  late final _init = _initPtr.asFunction<int Function()>();
+
+  int start(
+    ffi.Pointer<ffi.Int8> dir,
+  ) {
+    return _start(
+      dir,
+    );
+  }
+
+  late final _startPtr =
+      _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Pointer<ffi.Int8>)>>(
+          'start');
+  late final _start =
+      _startPtr.asFunction<int Function(ffi.Pointer<ffi.Int8>)>();
+
+  int process_key_name(
+    ffi.Pointer<ffi.Int8> name,
+  ) {
+    return _process_key_name(
+      name,
+    );
+  }
+
+  late final _process_key_namePtr =
+      _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Pointer<ffi.Int8>)>>(
+          'process_key_name');
+  late final _process_key_name =
+      _process_key_namePtr.asFunction<int Function(ffi.Pointer<ffi.Int8>)>();
+
+  int process_key(
+    int code,
+    int mask,
+  ) {
+    return _process_key(
+      code,
+      mask,
+    );
+  }
+
+  late final _process_keyPtr =
+      _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Int32, ffi.Int32)>>(
+          'process_key');
+  late final _process_key =
+      _process_keyPtr.asFunction<int Function(int, int)>();
+
+  ffi.Pointer<ffi.Int8> get_commit() {
+    return _get_commit();
+  }
+
+  late final _get_commitPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Int8> Function()>>(
+          'get_commit');
+  late final _get_commit =
+      _get_commitPtr.asFunction<ffi.Pointer<ffi.Int8> Function()>();
+
+  int finalize() {
+    return _finalize();
+  }
+
+  late final _finalizePtr =
+      _lookup<ffi.NativeFunction<ffi.Int32 Function()>>('finalize');
+  late final _finalize = _finalizePtr.asFunction<int Function()>();
 }
