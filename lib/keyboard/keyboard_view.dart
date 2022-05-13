@@ -1,50 +1,25 @@
-import 'package:flime/keyboard/api/api.dart';
-import 'package:flime/keyboard/widgets/keyboard_wrapper.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flime/keyboard/router/router.dart';
+import 'package:flime/keyboard/stores/constraint.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class KeyboardView extends StatelessWidget {
-  const KeyboardView({Key? key}) : super(key: key);
+  KeyboardView({Key? key}) : super(key: key);
+
+  final _keyboardRouter = KeyboardRouter();
 
   @override
   Widget build(BuildContext context) {
-    return FluentApp(
-      debugShowCheckedModeBanner: false,
-      home:
-      Align(
-        alignment: Alignment.bottomCenter,
-        child: KeyboardWrapper(
-          child: Column(
-            children: [
-              const Text(
-                'Hello world',
-              ),
-              Button(
-                child: const Text(
-                  'update height',
-                ),
-                onPressed: () {
-                  scopedLayoutApi.updateHeight(1000);
-                },
-              ),
-              Button(
-                child: const Text(
-                  'update height',
-                ),
-                onPressed: () {
-                  scopedLayoutApi.updateHeight(500);
-                },
-              ),
-              Button(
-                child: const Text(
-                  'update height',
-                ),
-                onPressed: () {
-                  scopedLayoutApi.updateHeight(300);
-                },
-              )
-            ],
-          ),
-        ),
+    return MultiProvider(
+      providers: [
+        Provider<Constraint>(
+          create: (_) => Constraint()..setupReactions(),
+        )
+      ],
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerDelegate: _keyboardRouter.delegate(),
+        routeInformationParser: _keyboardRouter.defaultRouteParser(),
       ),
     );
   }

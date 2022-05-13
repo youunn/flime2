@@ -19,6 +19,34 @@ class RimeBridge {
           lookup)
       : _lookup = lookup;
 
+  int get_keycode(
+    ffi.Pointer<ffi.Int8> name,
+  ) {
+    return _get_keycode(
+      name,
+    );
+  }
+
+  late final _get_keycodePtr =
+      _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Pointer<ffi.Int8>)>>(
+          'get_keycode');
+  late final _get_keycode =
+      _get_keycodePtr.asFunction<int Function(ffi.Pointer<ffi.Int8>)>();
+
+  int get_modifier(
+    ffi.Pointer<ffi.Int8> name,
+  ) {
+    return _get_modifier(
+      name,
+    );
+  }
+
+  late final _get_modifierPtr =
+      _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Pointer<ffi.Int8>)>>(
+          'get_modifier');
+  late final _get_modifier =
+      _get_modifierPtr.asFunction<int Function(ffi.Pointer<ffi.Int8>)>();
+
   int init() {
     return _init();
   }

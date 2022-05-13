@@ -4,3 +4,10 @@ import 'package:pigeon/pigeon.dart';
 abstract class LayoutApi {
   void updateHeight(int height);
 }
+
+@HostApi()
+abstract class InputMethodApi {
+  void enable();
+
+  void pick();
+}

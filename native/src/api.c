@@ -1,12 +1,17 @@
+#include "api.h"
+
 #include <rime_api.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "api.h"
 #include "cxxapi.h"
 
 static RimeSessionId session_id;
 static RimeApi* rime;
+
+int get_modifier(const char* name) { return get_modifier_by_name(name); }
+
+int get_keycode(const char* name) { return get_keycode_by_name(name); }
 
 int init() {
     rime = rime_get_api();
@@ -48,3 +53,4 @@ int finalize() {
     rime->finalize();
     return 0;
 }
+

@@ -4,8 +4,17 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'keyboard/keyboard_view.dart';
 
 void main() {
-  runApp(const App());
+  runApp(App());
 }
 
 @pragma('vm:entry-point')
-void showKeyboard() => runApp(const KeyboardView());
+void showKeyboard() {
+  // init();
+  runApp(KeyboardView());
+}
+
+Future init() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // TODO: MissingPluginException
+  // rimeBridge.start((await getRimeDirectory()).path.cast());
+}

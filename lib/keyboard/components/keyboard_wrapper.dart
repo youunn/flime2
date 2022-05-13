@@ -1,6 +1,7 @@
-import 'package:flime/keyboard/api/api.dart';
+import 'package:flime/keyboard/stores/constraint.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class KeyboardWrapper extends StatelessWidget {
   final Widget child;
@@ -9,6 +10,7 @@ class KeyboardWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final constraint = context.watch<Constraint>();
     return LayoutBuilder(
       builder: (context, _) {
         final boxKey = GlobalKey();
@@ -17,16 +19,12 @@ class KeyboardWrapper extends StatelessWidget {
           final w = box.getMaxIntrinsicWidth(double.infinity);
           final h = box.getMaxIntrinsicHeight(w);
           final dpr = MediaQuery.of(context).devicePixelRatio;
-          scopedLayoutApi.updateHeight((h * dpr).toInt());
+          constraint.setHeightAndDpr(h, dpr);
         });
 
         return Container(
-          clipBehavior: Clip.none,
           key: boxKey,
-          child: SingleChildScrollView(
-            clipBehavior: Clip.none,
-            child: child,
-          ),
+          child: child,
         );
       },
     );
