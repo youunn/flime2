@@ -15,7 +15,6 @@ import io.flutter.embedding.android.FlutterSurfaceView
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
-import io.flutter.plugins.GeneratedPluginRegistrant
 
 class Flime : InputMethodService() {
     private lateinit var engine: FlutterEngine
@@ -47,7 +46,6 @@ class Flime : InputMethodService() {
         engine.serviceControlSurface.attachToService(this, null, true)
         flutterView = FlutterView(this, FlutterSurfaceView(this, true))
         flutterView.attachToFlutterEngine(engine)
-
         inputView.flutterView = flutterView
 
         Pigeon.LayoutApi.setup(engine.dartExecutor.binaryMessenger, LayoutApi(this))
@@ -74,8 +72,10 @@ class Flime : InputMethodService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        inputView.removeFlutterView()
-        flutterView.detachFromFlutterEngine()
+        if (::flutterView.isInitialized) {
+            inputView.removeFlutterView()
+            flutterView.detachFromFlutterEngine()
+        }
         if (::engine.isInitialized) engine.run {
             serviceControlSurface.detachFromService()
             lifecycleChannel.appIsDetached()

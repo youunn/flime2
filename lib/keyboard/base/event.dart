@@ -1,4 +1,5 @@
 import 'package:flime/api/native.dart';
+import 'package:flime/utils/ffi.dart';
 
 class KEvent {
   int? _code;

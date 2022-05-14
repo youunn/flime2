@@ -3,6 +3,8 @@ import 'package:mobx/mobx.dart';
 
 part 'constraint.g.dart';
 
+// ignore_for_file: library_private_types_in_public_api
+
 class Constraint = _Constraint with _$Constraint;
 
 abstract class _Constraint with Store {

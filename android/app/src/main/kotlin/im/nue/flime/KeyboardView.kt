@@ -28,6 +28,8 @@ class KeyboardView(context: Context, attrs: AttributeSet) : ConstraintLayout(con
     }
 
     fun removeFlutterView() {
-        placer.removeView(flutterView)
+        if (::flutterView.isInitialized) {
+            placer.removeView(flutterView)
+        }
     }
 }

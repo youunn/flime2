@@ -20,7 +20,7 @@ class RimeBridge {
       : _lookup = lookup;
 
   int get_keycode(
-    ffi.Pointer<ffi.Int8> name,
+    ffi.Pointer<ffi.Char> name,
   ) {
     return _get_keycode(
       name,
@@ -28,13 +28,13 @@ class RimeBridge {
   }
 
   late final _get_keycodePtr =
-      _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Pointer<ffi.Int8>)>>(
+      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<ffi.Char>)>>(
           'get_keycode');
   late final _get_keycode =
-      _get_keycodePtr.asFunction<int Function(ffi.Pointer<ffi.Int8>)>();
+      _get_keycodePtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
 
   int get_modifier(
-    ffi.Pointer<ffi.Int8> name,
+    ffi.Pointer<ffi.Char> name,
   ) {
     return _get_modifier(
       name,
@@ -42,21 +42,20 @@ class RimeBridge {
   }
 
   late final _get_modifierPtr =
-      _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Pointer<ffi.Int8>)>>(
+      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<ffi.Char>)>>(
           'get_modifier');
   late final _get_modifier =
-      _get_modifierPtr.asFunction<int Function(ffi.Pointer<ffi.Int8>)>();
+      _get_modifierPtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
 
   int init() {
     return _init();
   }
 
-  late final _initPtr =
-      _lookup<ffi.NativeFunction<ffi.Int32 Function()>>('init');
+  late final _initPtr = _lookup<ffi.NativeFunction<ffi.Int Function()>>('init');
   late final _init = _initPtr.asFunction<int Function()>();
 
   int start(
-    ffi.Pointer<ffi.Int8> dir,
+    ffi.Pointer<ffi.Char> dir,
   ) {
     return _start(
       dir,
@@ -64,13 +63,13 @@ class RimeBridge {
   }
 
   late final _startPtr =
-      _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Pointer<ffi.Int8>)>>(
+      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<ffi.Char>)>>(
           'start');
   late final _start =
-      _startPtr.asFunction<int Function(ffi.Pointer<ffi.Int8>)>();
+      _startPtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
 
   int process_key_name(
-    ffi.Pointer<ffi.Int8> name,
+    ffi.Pointer<ffi.Char> name,
   ) {
     return _process_key_name(
       name,
@@ -78,10 +77,10 @@ class RimeBridge {
   }
 
   late final _process_key_namePtr =
-      _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Pointer<ffi.Int8>)>>(
+      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<ffi.Char>)>>(
           'process_key_name');
   late final _process_key_name =
-      _process_key_namePtr.asFunction<int Function(ffi.Pointer<ffi.Int8>)>();
+      _process_key_namePtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
 
   int process_key(
     int code,
@@ -94,26 +93,26 @@ class RimeBridge {
   }
 
   late final _process_keyPtr =
-      _lookup<ffi.NativeFunction<ffi.Int32 Function(ffi.Int32, ffi.Int32)>>(
+      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Int, ffi.Int)>>(
           'process_key');
   late final _process_key =
       _process_keyPtr.asFunction<int Function(int, int)>();
 
-  ffi.Pointer<ffi.Int8> get_commit() {
+  ffi.Pointer<ffi.Char> get_commit() {
     return _get_commit();
   }
 
   late final _get_commitPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Int8> Function()>>(
+      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
           'get_commit');
   late final _get_commit =
-      _get_commitPtr.asFunction<ffi.Pointer<ffi.Int8> Function()>();
+      _get_commitPtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
 
   int finalize() {
     return _finalize();
   }
 
   late final _finalizePtr =
-      _lookup<ffi.NativeFunction<ffi.Int32 Function()>>('finalize');
+      _lookup<ffi.NativeFunction<ffi.Int Function()>>('finalize');
   late final _finalize = _finalizePtr.asFunction<int Function()>();
 }

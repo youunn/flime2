@@ -14,7 +14,7 @@ class KeyboardWrapper extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, _) {
         final boxKey = GlobalKey();
-        SchedulerBinding.instance!.addPostFrameCallback((_) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
           final box = boxKey.currentContext!.findRenderObject() as RenderBox;
           final w = box.getMaxIntrinsicWidth(double.infinity);
           final h = box.getMaxIntrinsicHeight(w);

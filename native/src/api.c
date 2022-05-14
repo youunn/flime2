@@ -1,10 +1,28 @@
 #include "api.h"
 
+#ifdef __ANDROID_API__
+#include <android/log.h>
+#endif
+
 #include <rime_api.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
 #include "cxxapi.h"
+
+#ifdef __ANDROID_API__
+#define LOG_VERBOSE(X) __android_log_write(ANDROID_LOG_VERBOSE, "native", X);
+#define LOG_DEBUG(X) __android_log_write(ANDROID_LOG_DEBUG, "native", X);
+#define LOG_INFO(X) __android_log_write(ANDROID_LOG_INFO, "native", X);
+#define LOG_WARN(X) __android_log_write(ANDROID_LOG_WARN, "native", X);
+#define LOG_ERROR(X) __android_log_write(ANDROID_LOG_ERROR, "native", X);
+#else
+#define LOG_VERBOSE
+#define LOG_DEBUG
+#define LOG_INFO
+#define LOG_WARN
+#define LOG_ERROR
+#endif
 
 static RimeSessionId session_id;
 static RimeApi* rime;
@@ -19,14 +37,21 @@ int init() {
     return !!rime;
 }
 
+static void on_message(void* context, RimeSessionId id, const char* type, const char* value) {
+    char* message;
+    asprintf(&message, "message: [%s] %s", type, value);
+    LOG_INFO(message);
+}
+
 int start(const char* dir) {
     RIME_STRUCT(RimeTraits, traits);
     traits.shared_data_dir = dir;
     traits.user_data_dir = dir;
     traits.app_name = "flime";
+
     rime->setup(&traits);
     rime->initialize(&traits);
-    // rime->set_notification_handler();
+    rime->set_notification_handler(&on_message, NULL);
     rime->start_maintenance(true);
     rime->join_maintenance_thread();
     session_id = rime->create_session();
@@ -53,4 +78,3 @@ int finalize() {
     rime->finalize();
     return 0;
 }
-
