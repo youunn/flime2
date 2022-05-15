@@ -1,55 +1,48 @@
-import 'package:flime/api/native.dart';
-import 'package:flime/utils/ffi.dart';
+import 'package:flime/utils/keyboard_maps.dart';
+import 'package:flutter/services.dart';
 
 class KEvent {
-  int? _code;
-  int mask;
-  String? name;
-  Command? command;
+  final int? code; // linux
+  final int? androidCode;
+  final int mask; // X11
+  int? _androidMask;
+  final Command? command;
 
   KEvent({
-    this.name,
+    LogicalKeyboardKey? key,
     this.command,
     this.mask = 0,
-  }) : assert(name != null || command != null) {
-    if (command != null) _code = keycodeCommand;
+  })  : code = key == null
+            ? null
+            : kLogicalKeyToGtk[key] ?? kLogicalKeyToGlfw[key],
+        androidCode = key == null ? null : kLogicalKeyToAndroid[key];
+
+  int get androidMask {
+    if (_androidMask != null) return _androidMask!;
+    if (mask == 0) return mask;
+    var result = 0;
+    if (mask | modifierShift != 0) {
+      result |= RawKeyEventDataAndroid.modifierShift;
+    }
+    if (mask | modifierControl != 0) {
+      result |= RawKeyEventDataAndroid.modifierControl;
+    }
+    if (mask | modifierAlt != 0) {
+      result |= RawKeyEventDataAndroid.modifierAlt;
+    }
+    if (mask | modifierMeta != 0) {
+      result |= RawKeyEventDataAndroid.modifierMeta;
+    }
+    _androidMask = result;
+    return result;
   }
 
-  int get code {
-    if (name == null) return _code ?? keycodeVoid;
-    return _code ??= rimeBridge.get_keycode(name!.cast());
-  }
+  static const modifierShift = GtkKeyHelper.modifierShift;
+  static const modifierControl = GtkKeyHelper.modifierControl;
+  static const modifierAlt = GtkKeyHelper.modifierMod1;
+  static const modifierMeta = GtkKeyHelper.modifierMeta;
 }
 
 class Command {}
 
-// const values
-
-const keycodeVoid = 0xffffff;
-const keycodeCommand = -1;
-
-const _controlMaskName = 'Control';
-const _shiftMaskName = 'Shift';
-const _altMaskName = 'Alt';
-const _metaMaskName = 'Meta';
-
-int? _controlMask;
-int? _shiftMask;
-int? _altMask;
-int? _metaMask;
-
-int get controlMask {
-  return _controlMask ??= rimeBridge.get_modifier(_controlMaskName.cast());
-}
-
-int get shiftMask {
-  return _shiftMask ??= rimeBridge.get_modifier(_shiftMaskName.cast());
-}
-
-int get altMask {
-  return _altMask ??= rimeBridge.get_modifier(_altMaskName.cast());
-}
-
-int get metaMask {
-  return _metaMask ??= rimeBridge.get_modifier(_metaMaskName.cast());
-}
+typedef Lk = LogicalKeyboardKey;

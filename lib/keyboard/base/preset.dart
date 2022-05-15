@@ -1,16 +1,18 @@
+import 'package:flutter/services.dart';
+
 import 'event.dart';
 
 class K {
+  final Preset preset;
   final double height;
   final double width;
-  final Preset preset;
   final String label;
   final KEvent click;
 
   K({
+    required this.preset,
     required this.height,
     required this.width,
-    required this.preset,
     required this.label,
     required this.click,
   })  : assert(width >= 0 && width <= 1),
@@ -27,20 +29,36 @@ class KRow extends Iterable<K> {
   @override
   Iterator<K> get iterator => keys.iterator;
 
-  void k(
-    KEvent click, {
+  void k({
+    required KEvent click,
     required String label,
     double? width,
     double? height,
   }) {
     final key = K(
+      preset: preset,
       height: height ?? this.height,
       width: width ?? preset.width,
-      preset: preset,
-      click: click,
       label: label,
+      click: click,
     );
     keys.add(key);
+  }
+
+  void c(
+    LogicalKeyboardKey logicalKey, {
+    double? width,
+    double? height,
+    String? label,
+  }) {
+    final k = K(
+      preset: preset,
+      height: height ?? this.height,
+      width: width ?? preset.width,
+      label: label ?? logicalKey.keyLabel.toLowerCase(),
+      click: KEvent(key: logicalKey),
+    );
+    keys.add(k);
   }
 }
 

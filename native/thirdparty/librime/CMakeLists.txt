@@ -47,7 +47,7 @@ file(GLOB OPENCC_HEADERS
   ${CMAKE_CURRENT_BINARY_DIR}/src/thirdparty/src/opencc/build/src/opencc_config.h
 )
 set(OPENCC_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/thirdparty/src/opencc/build/include)
-make_directory(${OPENCC_INCLUDE_DIR}/opencc)
+file(MAKE_DIRECTORY ${OPENCC_INCLUDE_DIR}/opencc)
 foreach(header ${OPENCC_HEADERS})
   configure_file(${header} ${OPENCC_INCLUDE_DIR}/opencc COPYONLY)
 endforeach()

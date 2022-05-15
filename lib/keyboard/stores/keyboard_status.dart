@@ -2,11 +2,9 @@ import 'package:mobx/mobx.dart';
 
 part 'keyboard_status.g.dart';
 
-// ignore_for_file: library_private_types_in_public_api
+class KeyboardStatus = AbstractKeyboardStatus with _$KeyboardStatus;
 
-class KeyboardStatus = _KeyboardStatus with _$KeyboardStatus;
-
-abstract class _KeyboardStatus with Store {
+abstract class AbstractKeyboardStatus with Store {
   @observable
   int modifierState = 0;
 

@@ -30,9 +30,7 @@ class Flime : InputMethodService() {
     override fun onCreate() {
         super.onCreate()
         binding = KeyboardBinding.inflate(layoutInflater)
-    }
 
-    override fun onCreateInputView(): View {
         engine = FlutterEngine(this)
         engine.dartExecutor.executeDartEntrypoint(
             DartExecutor.DartEntrypoint(
@@ -41,12 +39,15 @@ class Flime : InputMethodService() {
                 SHOW_KEYBOARD_ENTRY_POINT,
             )
         )
+
+        Pigeon.LayoutApi.setup(engine.dartExecutor.binaryMessenger, LayoutApi(this))
+    }
+
+    override fun onCreateInputView(): View {
         engine.serviceControlSurface.attachToService(this, null, true)
         flutterView = FlutterView(this, FlutterSurfaceView(this, true))
         flutterView.attachToFlutterEngine(engine)
         inputView.flutterView = flutterView
-
-        Pigeon.LayoutApi.setup(engine.dartExecutor.binaryMessenger, LayoutApi(this))
 
         return inputView
     }

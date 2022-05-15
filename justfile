@@ -63,3 +63,6 @@ cp-boost:
             cp {{boost-dir}}/build/out/$a/lib/libboost_$l* android/app/src/main/jniLibs/$a/libboost_$l.a; \
         done; \
     done
+
+release:
+    flutter build apk --split-per-abi --release --verbose

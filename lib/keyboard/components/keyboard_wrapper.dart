@@ -4,13 +4,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class KeyboardWrapper extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
 
   const KeyboardWrapper({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final constraint = context.watch<Constraint>();
+    final constraint = context.watch<ConstraintStore>();
     return LayoutBuilder(
       builder: (context, _) {
         final boxKey = GlobalKey();
