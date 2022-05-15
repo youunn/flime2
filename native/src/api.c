@@ -34,7 +34,7 @@ int get_keycode(const char* name) { return get_keycode_by_name(name); }
 int init() {
     rime = rime_get_api();
 
-    return !!rime;
+    return rime != NULL;
 }
 
 static void on_message(void* context, RimeSessionId id, const char* type, const char* value) {

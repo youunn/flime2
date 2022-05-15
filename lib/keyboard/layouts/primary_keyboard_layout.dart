@@ -5,9 +5,14 @@ class PrimaryKeyboardLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      'primary',
-      style: TextStyle(color: Colors.cyan),
+    return const Card(
+      child: SizedBox(
+        width: 300,
+        height: 300,
+        child: Center(
+          child: Text('Primary'),
+        ),
+      ),
     );
   }
 }

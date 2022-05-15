@@ -2,7 +2,7 @@ import 'package:flime/api/native.dart';
 import 'package:flime/app/app.dart';
 import 'package:flime/utils/ffi.dart';
 import 'package:flime/utils/path.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 
 import 'keyboard/keyboard_view.dart';
 
@@ -18,8 +18,8 @@ void showKeyboard() {
 
 Future init() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final dataPath = (await getRimeDirectory()).path;
+  await copyAssets();
   rimeBridge
     ..init()
-    ..start(dataPath.cast());
+    ..start((await getRimeDirectory()).path.cast());
 }

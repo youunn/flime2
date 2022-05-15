@@ -1,12 +1,12 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 
 class GalleryPage extends StatelessWidget {
   const GalleryPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const ScaffoldPage(
-      content: Center(
+    return const Scaffold(
+      body: Center(
         child: Text('自定义控件测试页面'),
       ),
     );

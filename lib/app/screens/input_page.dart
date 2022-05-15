@@ -1,4 +1,4 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 
 class InputPage extends StatefulWidget {
   const InputPage({Key? key}) : super(key: key);
@@ -13,18 +13,11 @@ class _InputPageState extends State<InputPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldPage.withPadding(
-      header: Column(
-        children: const [
-          SizedBox(
-            height: 20,
-          ),
-          PageHeader(
-            title: Text('输入测试'),
-          ),
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('输入测试'),
       ),
-      content: Column(
+      body: Column(
         children: [
           Expanded(
             child: ListView(
@@ -37,13 +30,22 @@ class _InputPageState extends State<InputPage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
+            padding: const EdgeInsets.only(
+              left: 20,
+              right: 20,
             ),
-            child: TextBox(
+
+            // BottomInsets not working for Q with small keyboard. Just take it
+            // easy.
+            // See also:
+            //   FlutterView.guessBottomKeyboardInset(WindowInsets insets): int
+            child: TextField(
               controller: controller,
               textInputAction: TextInputAction.go,
-              placeholder: '试试你的输入法...',
+              decoration: const InputDecoration(
+                hintText: '试试你的输入法...',
+                border: InputBorder.none,
+              ),
               onSubmitted: (text) {
                 setState(() {
                   messages.add(text);

@@ -1,10 +1,7 @@
 package im.nue.flime
 
 import android.inputmethodservice.InputMethodService
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -20,6 +17,7 @@ class Flime : InputMethodService() {
     private lateinit var engine: FlutterEngine
     private lateinit var flutterView: FlutterView
     private lateinit var binding: KeyboardBinding
+    private var insetsUpdater: InsetsUpdater? = null
 
     var inputViewHeight = 0
     val inputView get() = binding.root
@@ -53,10 +51,22 @@ class Flime : InputMethodService() {
         return inputView
     }
 
+    override fun setInputView(view: View?) {
+        super.setInputView(view)
+        if (view == null) return
+        insetsUpdater = InsetsUpdater(view)
+    }
+
     override fun onComputeInsets(outInsets: Insets?) {
         super.onComputeInsets(outInsets)
-        outInsets?.visibleTopInsets = inputView.height - inputViewHeight
-        outInsets?.contentTopInsets = inputView.height - inputViewHeight
+
+        // val touchTop = if (showingMoreKeys) 0 else visibleTopY
+        outInsets?.touchableInsets = Insets.TOUCHABLE_INSETS_REGION
+        val outInsetsTop = inputView.height - inputViewHeight
+        outInsets?.touchableRegion?.set(0, outInsetsTop, inputView.width, inputView.height)
+        outInsets?.contentTopInsets = outInsetsTop
+        outInsets?.visibleTopInsets = outInsetsTop
+        insetsUpdater?.setInsets(outInsets)
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {

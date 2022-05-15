@@ -17,6 +17,9 @@ class KeyboardView extends StatelessWidget {
         )
       ],
       child: MaterialApp.router(
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
         debugShowCheckedModeBanner: false,
         routerDelegate: _keyboardRouter.delegate(),
         routeInformationParser: _keyboardRouter.defaultRouteParser(),

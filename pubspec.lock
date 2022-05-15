@@ -183,6 +183,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.2.1"
+  dynamic_color:
+    dependency: "direct main"
+    description:
+      name: dynamic_color
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.2"
   fake_async:
     dependency: transitive
     description:
@@ -218,13 +225,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.1"
-  fluent_ui:
-    dependency: "direct main"
-    description:
-      name: fluent_ui
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.12.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -237,11 +237,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.1"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_mobx:
     dependency: "direct main"
     description:
@@ -303,13 +298,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.0.0"
-  intl:
-    dependency: transitive
-    description:
-      name: intl
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.17.0"
   io:
     dependency: transitive
     description:
@@ -520,20 +508,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.1.0"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "4.0.0"
-  scroll_pos:
-    dependency: transitive
-    description:
-      name: scroll_pos
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.3.0"
   shelf:
     dependency: transitive
     description:
@@ -688,4 +662,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.17.0 <3.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=2.13.0-0.2.pre"

@@ -1,5 +1,6 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flime/app/router/router.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
   App({Key? key}) : super(key: key);
@@ -7,10 +8,16 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FluentApp.router(
-      color: Colors.black,
-      routerDelegate: _appRouter.delegate(),
-      routeInformationParser: _appRouter.defaultRouteParser(),
+    return DynamicColorBuilder(
+      builder: (lightColor, _) => MaterialApp.router(
+        theme: ThemeData(
+          colorSchemeSeed: lightColor?.primary ?? const Color(0xff6750a4),
+          useMaterial3: true,
+        ),
+        themeMode: ThemeMode.light,
+        routerDelegate: _appRouter.delegate(),
+        routeInformationParser: _appRouter.defaultRouteParser(),
+      ),
     );
   }
 }

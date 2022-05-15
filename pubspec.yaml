@@ -16,12 +16,12 @@ dependencies:
   mobx: ^2.0.7+2
   provider: ^6.0.2
   synchronized: ^3.0.0+2
-  fluent_ui: ^3.12.0
   path_provider: ^2.0.10
   path: ^1.8.0
   nested: ^1.0.0
   path_provider_android: ^2.0.14
   ffi: ^1.2.1
+  dynamic_color: ^1.2.2
 
 dev_dependencies:
   flutter_test:
