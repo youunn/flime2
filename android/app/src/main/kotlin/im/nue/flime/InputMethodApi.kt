@@ -6,7 +6,7 @@ import android.inputmethodservice.InputMethodService
 import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
 
-class InputMethodApi(val context: Context) : Pigeon.InputMethodApi {
+class InputMethodApi(private val context: Context) : Pigeon.InputMethodApi {
     override fun enable() {
         Intent().apply {
             action = Settings.ACTION_INPUT_METHOD_SETTINGS

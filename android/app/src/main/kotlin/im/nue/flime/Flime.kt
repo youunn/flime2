@@ -40,7 +40,14 @@ class Flime : InputMethodService() {
             )
         )
 
-        Pigeon.LayoutApi.setup(engine.dartExecutor.binaryMessenger, LayoutApi(this))
+        Pigeon.LayoutApi.setup(
+            engine.dartExecutor.binaryMessenger,
+            LayoutApi(this),
+        )
+        Pigeon.InputConnectionApi.setup(
+            engine.dartExecutor.binaryMessenger,
+            InputConnectionApi(this),
+        )
     }
 
     override fun onCreateInputView(): View {

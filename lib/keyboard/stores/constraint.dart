@@ -1,4 +1,4 @@
-import 'package:flime/keyboard/api/api.dart';
+import 'package:flime/api/platform_api.g.dart';
 import 'package:mobx/mobx.dart';
 
 part 'constraint.g.dart';
@@ -11,7 +11,9 @@ abstract class AbstractConstraintStore with Store {
   @readonly
   double _dpr = 1;
 
-  final layoutApi = scopedLayoutApi;
+  final LayoutApi layoutApi;
+
+  AbstractConstraintStore(this.layoutApi);
 
   @computed
   int get totalHeightInPx => (_height * _dpr).toInt();

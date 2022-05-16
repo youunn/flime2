@@ -8,7 +8,7 @@ extension NativeCast on String {
   }
 }
 
-extension StringCast on Pointer<Int8> {
+extension StringCast on Pointer<Char> {
   String? toDartString() {
     final p = cast<Utf8>();
     return p == nullptr ? null : p.toDartString();

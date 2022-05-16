@@ -24,7 +24,11 @@ endif()
 # add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/src/thirdparty/src/glog)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/src/thirdparty/include)
-include_directories(~/Projects/thirdParty/Boost-for-Android/build/out/${ANDROID_ABI}/include/boost-1_78)
+if(DEFINED ENV{BOOST_FOR_ANDROID_DIR} AND DEFINED ENV{BOOST_PREBUILD_VERSION})
+    include_directories("$ENV{BOOST_FOR_ANDROID_DIR}/build/out/${ANDROID_ABI}/include/boost-$ENV{BOOST_PREBUILD_VERSION}")
+else()
+    message(FATAL_ERROR "set BOOST_FOR_ANDROID_DIR and BOOST_PREBUILD_VERSION environment in .env")
+endif()
 
 set(HAVE_SNAPPY FALSE)
 option(LEVELDB_BUILD_TESTS "" OFF)

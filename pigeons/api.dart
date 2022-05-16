@@ -11,3 +11,9 @@ abstract class InputMethodApi {
 
   void pick();
 }
+
+@HostApi()
+abstract class InputConnectionApi {
+  void commit(String text);
+  void send(int code, int mask);
+}

@@ -13,10 +13,6 @@ pigeon-java-package := "im.nue.flime"
 
 ffi-output-dir := "lib/api"
 
-boost-dir := "~/Projects/thirdParty/Boost-for-Android"
-ndk-root := "~/.local/share/android/sdk/ndk/23.0.7599858"
-boost-version := "1.78.0"
-
 default: gen-br
 
 add-deps:
@@ -36,7 +32,7 @@ gen-frb:
 gen-br:
     flutter pub run build_runner build
 
-gen-p:
+gen-pigeon:
     [[ -d {{pigeon-java-output-dir}} ]] || mkdir -p {{pigeon-java-output-dir}}
     flutter pub run pigeon \
         --input {{pigeon-input}} \
@@ -48,21 +44,43 @@ gen-ffi:
     [[ -d {{ffi-output-dir}} ]] || mkdir -p {{ffi-output-dir}}
     flutter pub run ffigen
 
-# TODO: clone and build in temp directory
 build-boost:
-    cd {{boost-dir}}; \
-    ./build-android.sh {{ndk-root}} --boost={{boost-version}}
-    just cp-boost
+    #!/usr/bin/env bash
+    if [[ ! -z "${BOOST_FOR_ANDROID_DIR}" && ! -z "${NDK_ROOT_DIR}" ]]; then
+        [[ ! -d "${BOOST_FOR_ANDROID_DIR}"]] && mkdir -p ${BOOST_FOR_ANDROID_DIR}
+        [[ ! -z $(ls -A ${BOOST_FOR_ANDROID_DIR})]] && cd ${BOOST_FOR_ANDROID_DIR} && git clone https://github.com/moritz-wundke/Boost-for-Android .
+
+        p=$(pwd)
+        cd $BOOST_FOR_ANDROID_DIR
+        ./build-android.sh $NDK_ROOT_DIR --boost=${BOOST_PREBUILD_VERSION_NUMBER}
+        cd $p
+        just cp-boost
+    else
+        echo "Please add BOOST_FOR_ANDROID_DIR and NDK_ROOT_DIR environment variable in .env file."
+        false
+    fi
 
 cp-boost:
-    libs=( filesystem regex system ); \
-    abis=( arm64-v8a armeabi-v7a x86 x86_64 ); \
-    for a in "${abis[@]}"; do \
-        [[ -d android/app/src/main/jniLibs/$a ]] || mkdir -p android/app/src/main/jniLibs/$a; \
-        for l in "${libs[@]}"; do \
-            cp {{boost-dir}}/build/out/$a/lib/libboost_$l* android/app/src/main/jniLibs/$a/libboost_$l.a; \
-        done; \
-    done
+    #!/usr/bin/env bash
+    if [[ ! -z "${BOOST_FOR_ANDROID_DIR}" ]]; then
+        libs=( filesystem regex system )
+        abis=( arm64-v8a armeabi-v7a x86 x86_64 )
+        for a in "${abis[@]}"; do
+            [[ -d android/app/src/main/jniLibs/$a ]] || mkdir -p android/app/src/main/jniLibs/$a
+            for l in "${libs[@]}"; do
+                source=${BOOST_FOR_ANDROID_DIR}"/build/out/"$a"/lib/libboost_"$l
+                target="android/app/src/main/jniLibs/$a/libboost_"$l".a"
+                # cannot run directly. don't know why
+                bash -c "cp $source* $target"
+            done
+        done
+    else
+        echo "Please add BOOST_FOR_ANDROID_DIR environment variable in .env file."
+        false
+    fi
+
+run:
+    flutter run
 
 release:
     flutter build apk --split-per-abi --release --verbose

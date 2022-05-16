@@ -12,10 +12,8 @@ class KEvent {
     LogicalKeyboardKey? key,
     this.command,
     this.mask = 0,
-  })  : code = key == null
-            ? null
-            : kLogicalKeyToGtk[key] ?? kLogicalKeyToGlfw[key],
-        androidCode = key == null ? null : kLogicalKeyToAndroid[key];
+  })  : code = key == null ? null : logicalKeyToX11Map[key],
+        androidCode = key == null ? null : logicalKeyToAndroidMap[key];
 
   int get androidMask {
     if (_androidMask != null) return _androidMask!;
@@ -46,3 +44,4 @@ class KEvent {
 class Command {}
 
 typedef Lk = LogicalKeyboardKey;
+typedef Sl = SmallLetter;

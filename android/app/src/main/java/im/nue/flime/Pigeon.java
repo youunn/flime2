@@ -120,6 +120,77 @@ public class Pigeon {
       }
     }
   }
+  private static class InputConnectionApiCodec extends StandardMessageCodec {
+    public static final InputConnectionApiCodec INSTANCE = new InputConnectionApiCodec();
+    private InputConnectionApiCodec() {}
+  }
+
+  /** Generated interface from Pigeon that represents a handler of messages from Flutter.*/
+  public interface InputConnectionApi {
+    void commit(@NonNull String text);
+    void send(@NonNull Long code, @NonNull Long mask);
+
+    /** The codec used by InputConnectionApi. */
+    static MessageCodec<Object> getCodec() {
+      return InputConnectionApiCodec.INSTANCE;
+    }
+
+    /** Sets up an instance of `InputConnectionApi` to handle messages through the `binaryMessenger`. */
+    static void setup(BinaryMessenger binaryMessenger, InputConnectionApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.InputConnectionApi.commit", getCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            Map<String, Object> wrapped = new HashMap<>();
+            try {
+              ArrayList<Object> args = (ArrayList<Object>)message;
+              String textArg = (String)args.get(0);
+              if (textArg == null) {
+                throw new NullPointerException("textArg unexpectedly null.");
+              }
+              api.commit(textArg);
+              wrapped.put("result", null);
+            }
+            catch (Error | RuntimeException exception) {
+              wrapped.put("error", wrapError(exception));
+            }
+            reply.reply(wrapped);
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.InputConnectionApi.send", getCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            Map<String, Object> wrapped = new HashMap<>();
+            try {
+              ArrayList<Object> args = (ArrayList<Object>)message;
+              Number codeArg = (Number)args.get(0);
+              if (codeArg == null) {
+                throw new NullPointerException("codeArg unexpectedly null.");
+              }
+              Number maskArg = (Number)args.get(1);
+              if (maskArg == null) {
+                throw new NullPointerException("maskArg unexpectedly null.");
+              }
+              api.send((codeArg == null) ? null : codeArg.longValue(), (maskArg == null) ? null : maskArg.longValue());
+              wrapped.put("result", null);
+            }
+            catch (Error | RuntimeException exception) {
+              wrapped.put("error", wrapError(exception));
+            }
+            reply.reply(wrapped);
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
   private static Map<String, Object> wrapError(Throwable exception) {
     Map<String, Object> errorMap = new HashMap<>();
     errorMap.put("message", exception.toString());

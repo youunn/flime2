@@ -21,43 +21,43 @@ class PrimaryKeyboardLayout extends StatelessWidget {
     // 第一行
     ..r(
       (r) => r
-        ..c(Lk.keyQ)
-        ..c(Lk.keyW)
-        ..c(Lk.keyE)
-        ..c(Lk.keyR)
-        ..c(Lk.keyT)
-        ..c(Lk.keyY)
-        ..c(Lk.keyU)
-        ..c(Lk.keyI)
-        ..c(Lk.keyO)
-        ..c(Lk.keyP),
+        ..c(Sl.keyQ)
+        ..c(Sl.keyW)
+        ..c(Sl.keyE)
+        ..c(Sl.keyR)
+        ..c(Sl.keyT)
+        ..c(Sl.keyY)
+        ..c(Sl.keyU)
+        ..c(Sl.keyI)
+        ..c(Sl.keyO)
+        ..c(Sl.keyP),
     )
     // 第二行
     ..r(
       (r) => r
-        ..c(Lk.keyA, label: '', width: 0.05)
-        ..c(Lk.keyA)
-        ..c(Lk.keyS)
-        ..c(Lk.keyD)
-        ..c(Lk.keyF)
-        ..c(Lk.keyG)
-        ..c(Lk.keyH)
-        ..c(Lk.keyJ)
-        ..c(Lk.keyK)
-        ..c(Lk.keyL)
-        ..c(Lk.keyL, label: '', width: 0.05),
+        ..c(Sl.keyA, label: '', width: 0.05)
+        ..c(Sl.keyA)
+        ..c(Sl.keyS)
+        ..c(Sl.keyD)
+        ..c(Sl.keyF)
+        ..c(Sl.keyG)
+        ..c(Sl.keyH)
+        ..c(Sl.keyJ)
+        ..c(Sl.keyK)
+        ..c(Sl.keyL)
+        ..c(Sl.keyL, label: '', width: 0.05),
     )
     // 第三行
     ..r(
       (r) => r
         ..c(Lk.shift, width: 0.15)
-        ..c(Lk.keyZ)
-        ..c(Lk.keyX)
-        ..c(Lk.keyC)
-        ..c(Lk.keyV)
-        ..c(Lk.keyB)
-        ..c(Lk.keyN)
-        ..c(Lk.keyM)
+        ..c(Sl.keyZ)
+        ..c(Sl.keyX)
+        ..c(Sl.keyC)
+        ..c(Sl.keyV)
+        ..c(Sl.keyB)
+        ..c(Sl.keyN)
+        ..c(Sl.keyM)
         ..c(Lk.backspace, width: 0.15),
     )
     // 第四行

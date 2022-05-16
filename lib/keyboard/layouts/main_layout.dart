@@ -19,7 +19,7 @@ class MainLayout extends StatelessWidget {
             return Observer(
               builder: (context) {
                 return SizedBox(
-                  height: context.read<ConstraintStore>().height,
+                  height: constraint.height,
                   child: Material(
                     color: Colors.black,
                     child: child,

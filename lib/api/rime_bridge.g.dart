@@ -19,33 +19,19 @@ class RimeBridge {
           lookup)
       : _lookup = lookup;
 
-  int get_keycode(
-    ffi.Pointer<ffi.Char> name,
+  void free_string(
+    ffi.Pointer<ffi.Char> string,
   ) {
-    return _get_keycode(
-      name,
+    return _free_string(
+      string,
     );
   }
 
-  late final _get_keycodePtr =
-      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<ffi.Char>)>>(
-          'get_keycode');
-  late final _get_keycode =
-      _get_keycodePtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
-
-  int get_modifier(
-    ffi.Pointer<ffi.Char> name,
-  ) {
-    return _get_modifier(
-      name,
-    );
-  }
-
-  late final _get_modifierPtr =
-      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<ffi.Char>)>>(
-          'get_modifier');
-  late final _get_modifier =
-      _get_modifierPtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
+  late final _free_stringPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Char>)>>(
+          'free_string');
+  late final _free_string =
+      _free_stringPtr.asFunction<void Function(ffi.Pointer<ffi.Char>)>();
 
   int init() {
     return _init();
@@ -67,20 +53,6 @@ class RimeBridge {
           'start');
   late final _start =
       _startPtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
-
-  int process_key_name(
-    ffi.Pointer<ffi.Char> name,
-  ) {
-    return _process_key_name(
-      name,
-    );
-  }
-
-  late final _process_key_namePtr =
-      _lookup<ffi.NativeFunction<ffi.Int Function(ffi.Pointer<ffi.Char>)>>(
-          'process_key_name');
-  late final _process_key_name =
-      _process_key_namePtr.asFunction<int Function(ffi.Pointer<ffi.Char>)>();
 
   int process_key(
     int code,

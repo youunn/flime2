@@ -5,7 +5,7 @@ import android.inputmethodservice.InputMethodService
 import android.view.View
 import android.view.ViewOutlineProvider
 
-class InsetsUpdater(val view: View?) : ViewOutlineProvider() {
+class InsetsUpdater(private val view: View?) : ViewOutlineProvider() {
     private var lastVisibleTopInsets = -1
 
     init {

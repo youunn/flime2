@@ -1,4 +1,5 @@
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flime/api/platform_api.g.dart';
 import 'package:flime/app/router/router.dart';
 import 'package:flime/keyboard/stores/theme.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,15 @@ class App extends StatelessWidget {
       builder: (lightDynamic, darkDynamic) {
         return MultiProvider(
           providers: [
+            Provider<InputMethodApi>(
+              create: (_) => InputMethodApi(),
+            ),
             Provider<ThemeStore>(
-                create: (_) => ThemeStore(
-                      lightDynamic,
-                      darkDynamic,
-                    )),
+              create: (_) => ThemeStore(
+                lightDynamic,
+                darkDynamic,
+              ),
+            ),
           ],
           child: Consumer<ThemeStore>(
             builder: (_, theme, __) {
