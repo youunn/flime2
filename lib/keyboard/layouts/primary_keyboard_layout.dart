@@ -21,16 +21,16 @@ class PrimaryKeyboardLayout extends StatelessWidget {
     // 第一行
     ..r(
       (r) => r
-        ..c(Sl.keyQ)
-        ..c(Sl.keyW)
-        ..c(Sl.keyE)
-        ..c(Sl.keyR)
-        ..c(Sl.keyT)
-        ..c(Sl.keyY)
-        ..c(Sl.keyU)
-        ..c(Sl.keyI)
-        ..c(Sl.keyO)
-        ..c(Sl.keyP),
+        ..c(Sl.keyQ, longClick: Lk.digit1)
+        ..c(Sl.keyW, longClick: Lk.digit2)
+        ..c(Sl.keyE, longClick: Lk.digit3)
+        ..c(Sl.keyR, longClick: Lk.digit4)
+        ..c(Sl.keyT, longClick: Lk.digit5)
+        ..c(Sl.keyY, longClick: Lk.digit6)
+        ..c(Sl.keyU, longClick: Lk.digit7)
+        ..c(Sl.keyI, longClick: Lk.digit8)
+        ..c(Sl.keyO, longClick: Lk.digit9)
+        ..c(Sl.keyP, longClick: Lk.digit0),
     )
     // 第二行
     ..r(
@@ -40,7 +40,24 @@ class PrimaryKeyboardLayout extends StatelessWidget {
         ..c(Sl.keyS)
         ..c(Sl.keyD)
         ..c(Sl.keyF)
-        ..c(Sl.keyG)
+        ..c(
+          Sl.keyG,
+          more: MoreKeysPanel(width: 0.1, height: 0.15, fontSize: 26)
+            ..r(
+              (r) => r
+                ..c(Sl.keyH)
+                ..c(Sl.keyJ)
+                ..c(Sl.keyK)
+                ..c(Sl.keyL),
+            )
+            ..r(
+              (r) => r
+                ..c(Sl.keyZ)
+                ..c(Sl.keyX)
+                ..c(Sl.keyC)
+                ..c(Sl.keyV),
+            ),
+        )
         ..c(Sl.keyH)
         ..c(Sl.keyJ)
         ..c(Sl.keyK)

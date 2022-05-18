@@ -10,14 +10,51 @@ class K {
   final Preset preset;
   final String label;
   final KEvent click;
+  final KEvent? longClick;
+  final String? longClickLabel;
   final Rectangle<double> hitBox;
+  final MoreKeysPanel? more;
+  late final Rectangle<double>? moreKeysPanelBox;
+
+  static const emptyHitBox = Rectangle<double>(0, 0, 0, 0);
 
   K({
     required this.preset,
     required this.label,
     required this.click,
+    this.longClick,
+    this.longClickLabel,
     required this.hitBox,
-  });
+    this.more,
+  }) {
+    if (more == null) {
+      moreKeysPanelBox = null;
+    } else {
+      final h = more?.totalHeight ?? 0;
+      final w = more?.maxRowWidth ?? 0;
+      final realTop = hitBox.top - h;
+      final left = hitBox.left + hitBox.width / 2 - (w / 2);
+      final right = hitBox.right - hitBox.width / 2 + (w / 2);
+      final double realLeft;
+      if (left < 0) {
+        realLeft = 0;
+      } else if (right > 1) {
+        realLeft = left + 1 - right;
+      } else {
+        realLeft = left;
+      }
+      moreKeysPanelBox = Rectangle(realLeft, realTop, w, h);
+    }
+  }
+
+  K.dummy(this.preset)
+      : label = '',
+        click = KEvent(),
+        longClick = null,
+        longClickLabel = null,
+        more = null,
+        moreKeysPanelBox = null,
+        hitBox = emptyHitBox;
 
   double getSquaredDistance(double x, double y) {
     final double dx;
@@ -61,39 +98,48 @@ class KRow extends Iterable<K> {
   void k({
     required KEvent click,
     required String label,
+    KEvent? longClick,
+    String? longClickLabel,
     double? width,
     double? height,
+    MoreKeysPanel? more,
   }) {
     final x = keys.isNotEmpty ? keys.last.hitBox.right : 0.0;
     final w = width ?? preset.width;
     final h = height ?? this.height;
     final hitBox = Rectangle<double>(x, y, w, h);
+
     final key = K(
       preset: preset,
       label: label,
       click: click,
+      longClick: longClick,
+      longClickLabel: longClickLabel,
       hitBox: hitBox,
+      more: more,
     );
     keys.add(key);
   }
 
   void c(
     LogicalKeyboardKey logicalKey, {
+    String? label,
+    LogicalKeyboardKey? longClick,
+    KEvent? longClickEvent,
+    String? longClickLabel,
     double? width,
     double? height,
-    String? label,
+    MoreKeysPanel? more,
   }) {
-    final x = keys.isNotEmpty ? keys.last.hitBox.right : 0.0;
-    final w = width ?? preset.width;
-    final h = height ?? this.height;
-    final hitBox = Rectangle<double>(x, y, w, h);
-    final k = K(
-      preset: preset,
-      label: label ?? logicalKey.keyLabel.toLowerCase(),
+    k(
       click: KEvent(key: logicalKey),
-      hitBox: hitBox,
+      label: label ?? logicalKey.keyLabel.toLowerCase(),
+      longClick: longClickEvent ?? KEvent(key: longClick),
+      longClickLabel: longClickLabel ?? longClick?.keyLabel.toLowerCase(),
+      width: width,
+      height: height,
+      more: more,
     );
-    keys.add(k);
   }
 }
 
@@ -108,8 +154,8 @@ class Preset extends Iterable<KRow> {
   // 迷之数字，可能会改
   static const _defaultWidth = 0.1;
   static const _searchFactor = 1.2; // 迷之数字
-  static const _threshold = _defaultWidth * _searchFactor;
-  static const _thresholdSquared = _threshold * _threshold;
+  static const threshold = _defaultWidth * _searchFactor;
+  static const _thresholdSquared = threshold * threshold;
   static const _hGridCount = 30;
   static const _vGridCount = 20;
   static const _cellsCount = _hGridCount * _vGridCount;
@@ -127,10 +173,21 @@ class Preset extends Iterable<KRow> {
   @override
   Iterator<KRow> get iterator => rows.iterator;
 
-  // double get totalHeight =>
-  //     rows.fold(0, (value, element) => value + element.height);
-
+  // TODO: use cached value
   double get totalHeight => rows.isNotEmpty ? rows.last.height + rows.last.y : 0;
+
+  double get maxRowWidth => rows.fold(
+        0,
+        (prev, curr) {
+          if (curr.isNotEmpty) {
+            final rowWidth = curr.keys.last.hitBox.right;
+            if (rowWidth > prev) {
+              return rowWidth;
+            }
+          }
+          return prev;
+        },
+      );
 
   int get keyCount => rows.fold(0, (prev, curr) => prev + curr.keys.length);
 
@@ -201,20 +258,20 @@ class Preset extends Iterable<KRow> {
       for (final r in this) {
         for (final k in r) {
           // vertical
-          final topPixel = k.hitBox.top - _threshold;
+          final topPixel = k.hitBox.top - threshold;
           final yDeltaToGrid = topPixel % cellHeight;
           final yMiddleOfTopCell = topPixel - yDeltaToGrid + halfCellHeight;
           final roundUpFlag = yDeltaToGrid <= halfCellHeight ? 0 : 1;
           final yStart = max(halfCellHeight, yMiddleOfTopCell + roundUpFlag * cellHeight);
-          final yEnd = min(maxHeight, k.hitBox.top + _threshold);
+          final yEnd = min(maxHeight, k.hitBox.top + threshold);
 
           // horizontal
-          final leftPixel = k.hitBox.left - _threshold;
+          final leftPixel = k.hitBox.left - threshold;
           final xDeltaToGrid = leftPixel % _cellWidth;
           final xMiddleOfLeftCell = leftPixel - xDeltaToGrid + halfCellWidth;
           final roundLeftFlag = xDeltaToGrid <= halfCellWidth ? 0 : 1;
           final xStart = max(halfCellWidth, xMiddleOfLeftCell + roundLeftFlag * _cellWidth);
-          final xEnd = min(1, k.hitBox.right + _threshold);
+          final xEnd = min(1, k.hitBox.right + threshold);
 
           var baseIndex = yStart ~/ cellHeight * _hGridCount + xStart ~/ _cellWidth;
           for (var centerY = yStart; centerY <= yEnd; centerY += cellHeight) {
@@ -235,4 +292,8 @@ class Preset extends Iterable<KRow> {
       _cached = true;
     });
   }
+}
+
+class MoreKeysPanel extends Preset {
+  MoreKeysPanel({required super.width, required super.height, required super.fontSize});
 }

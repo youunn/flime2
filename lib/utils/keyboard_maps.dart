@@ -203,7 +203,7 @@ final logicalKeyToX11Map = <LogicalKeyboardKey, int>{
 };
 
 class SmallLetter extends LogicalKeyboardKey {
-  const SmallLetter(int keyId) : super(keyId);
+  const SmallLetter(super.keyId);
 
   @override
   String get keyLabel => _smallLetterkeyLabels[keyId] ?? '';
