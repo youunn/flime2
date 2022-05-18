@@ -3,11 +3,11 @@ import 'package:flime/api/platform_api.g.dart';
 import 'package:flime/keyboard/router/router.dart';
 import 'package:flime/keyboard/services/input_service.dart';
 import 'package:flime/keyboard/stores/constraint.dart';
+import 'package:flime/keyboard/stores/settings.dart';
 import 'package:flime/keyboard/stores/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-
 
 class KeyboardView extends StatelessWidget {
   KeyboardView({Key? key}) : super(key: key);
@@ -20,6 +20,9 @@ class KeyboardView extends StatelessWidget {
       builder: (lightDynamic, darkDynamic) {
         return MultiProvider(
           providers: [
+            Provider<SettingsStore>(
+              create: (_) => SettingsStore(),
+            ),
             Provider<LayoutApi>(
               create: (_) => LayoutApi(),
             ),
@@ -36,7 +39,7 @@ class KeyboardView extends StatelessWidget {
                 darkDynamic,
               ),
             ),
-            ProxyProvider<LayoutApi,ConstraintStore>(
+            ProxyProvider<LayoutApi, ConstraintStore>(
               update: (_, layoutApi, __) => ConstraintStore(layoutApi)..setupReactions(),
             ),
           ],
@@ -50,8 +53,7 @@ class KeyboardView extends StatelessWidget {
                     themeMode: theme.themeMode,
                     debugShowCheckedModeBanner: false,
                     routerDelegate: _keyboardRouter.delegate(),
-                    routeInformationParser:
-                        _keyboardRouter.defaultRouteParser(),
+                    routeInformationParser: _keyboardRouter.defaultRouteParser(),
                   );
                 },
               );

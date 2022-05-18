@@ -23,14 +23,12 @@ Future copyAssets() async {
   if (await dataDirectory.exists()) return;
   await dataDirectory.create(recursive: true);
 
-  final Map<String, dynamic> assets =
-      jsonDecode(await rootBundle.loadString('AssetManifest.json'));
+  final Map<String, dynamic> assets = jsonDecode(await rootBundle.loadString('AssetManifest.json'));
   const pattern = 'assets/rime/';
   final paths = assets.keys.where((k) => k.contains(pattern)).toList();
   for (final p in paths) {
     final data = await rootBundle.load(p);
-    final bytes =
-        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    final bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
     final f = p.substring(p.indexOf(pattern) + pattern.length);
     if (f.contains('/')) {

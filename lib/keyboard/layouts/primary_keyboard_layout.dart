@@ -15,7 +15,7 @@ class PrimaryKeyboardLayout extends StatelessWidget {
 
   static final _preset = Preset(
     width: 0.1,
-    height: 63,
+    height: 0.15,
     fontSize: 26,
   )
     // 第一行
@@ -72,6 +72,8 @@ class PrimaryKeyboardLayout extends StatelessWidget {
         ..c(Lk.space, label: '', width: 0.34)
         ..c(Lk.period, width: 0.14)
         ..c(Lk.enter, label: '→', width: 0.16),
-      height: 75,
-    );
+      height: 0.18,
+    )
+    // 初始化
+    ..cache();
 }

@@ -14,11 +14,8 @@ import 'rime_bridge.g.dart';
 //         ? DynamicLibrary.executable()
 //         : DynamicLibrary.open(_flimeDylib));
 
-final _rimeBridgeDylib =
-    io.Platform.isWindows ? 'rime_bridge.dll' : 'librime_bridge.so';
+final _rimeBridgeDylib = io.Platform.isWindows ? 'rime_bridge.dll' : 'librime_bridge.so';
 
 final RimeBridge rimeBridge = RimeBridge(
-  io.Platform.isIOS || io.Platform.isMacOS
-      ? DynamicLibrary.executable()
-      : DynamicLibrary.open(_rimeBridgeDylib),
+  io.Platform.isIOS || io.Platform.isMacOS ? DynamicLibrary.executable() : DynamicLibrary.open(_rimeBridgeDylib),
 );

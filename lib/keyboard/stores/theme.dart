@@ -34,8 +34,7 @@ abstract class AbstractThemeStore with Store {
   Brightness brightness = Brightness.dark;
 
   @computed
-  ThemeMode get themeMode =>
-      brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark;
+  ThemeMode get themeMode => brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark;
 
   @action
   void changeTheme(Brightness newMode) {
@@ -43,9 +42,7 @@ abstract class AbstractThemeStore with Store {
   }
 
   ColorScheme _colors(Brightness brightness) {
-    final dynamicPrimary = brightness == Brightness.light
-        ? lightDynamic?.primary
-        : darkDynamic?.primary;
+    final dynamicPrimary = brightness == Brightness.light ? lightDynamic?.primary : darkDynamic?.primary;
     final fallbackColor = brightness == Brightness.light ? 0x6750A4 : 0xD0BCFF;
     return ColorScheme.fromSeed(
       seedColor: dynamicPrimary ?? Color(fallbackColor),

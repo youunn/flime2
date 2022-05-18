@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart';
 
-final logicalKeyToAndroidMap =
-    kAndroidToLogicalKey.map((key, value) => MapEntry(value, key));
+final logicalKeyToAndroidMap = kAndroidToLogicalKey.map((key, value) => MapEntry(value, key));
 // final logicalKeyToGlfwMap = kGlfwToLogicalKey.map((key, value) => MapEntry(value, key));
 // final logicalKeyToGtkMap = kGtkToLogicalKey.map((key, value) => MapEntry(value, key));
 
@@ -204,7 +203,7 @@ final logicalKeyToX11Map = <LogicalKeyboardKey, int>{
 };
 
 class SmallLetter extends LogicalKeyboardKey {
-  const SmallLetter(super.keyId);
+  const SmallLetter(int keyId) : super(keyId);
 
   @override
   String get keyLabel => _smallLetterkeyLabels[keyId] ?? '';
