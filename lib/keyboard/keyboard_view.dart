@@ -3,6 +3,7 @@ import 'package:flime/api/platform_api.g.dart';
 import 'package:flime/keyboard/router/router.dart';
 import 'package:flime/keyboard/services/input_service.dart';
 import 'package:flime/keyboard/stores/constraint.dart';
+import 'package:flime/keyboard/stores/keyboard_status.dart';
 import 'package:flime/keyboard/stores/settings.dart';
 import 'package:flime/keyboard/stores/theme.dart';
 import 'package:flutter/material.dart';
@@ -23,24 +24,28 @@ class KeyboardView extends StatelessWidget {
             Provider<SettingsStore>(
               create: (_) => SettingsStore(),
             ),
+            Provider<ThemeStore>(
+              create: (_) => ThemeStore(lightDynamic, darkDynamic),
+            ),
             Provider<LayoutApi>(
               create: (_) => LayoutApi(),
+            ),
+            Provider<InputMethodApi>(
+              create: (_) => InputMethodApi(),
             ),
             Provider<InputConnectionApi>(
               create: (_) => InputConnectionApi(),
             ),
-            Provider<InputService>(
-              create: (_) => RimeService()..init(),
+            Provider<KeyboardStatus>(
+              create: (_) => KeyboardStatus(),
               lazy: false,
             ),
-            Provider<ThemeStore>(
-              create: (_) => ThemeStore(
-                lightDynamic,
-                darkDynamic,
-              ),
+            ProxyProvider<KeyboardStatus, InputService>(
+              update: (_, status, __) => RimeService(status)..init(),
+              lazy: false,
             ),
             ProxyProvider<LayoutApi, ConstraintStore>(
-              update: (_, layoutApi, __) => ConstraintStore(layoutApi)..setupReactions(),
+              update: (_, layoutApi, __) => ConstraintStore(layoutApi),
             ),
           ],
           child: Consumer<ThemeStore>(

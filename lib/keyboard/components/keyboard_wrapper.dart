@@ -10,21 +10,60 @@ class KeyboardWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final constraint = context.watch<ConstraintStore>();
-    return LayoutBuilder(
-      builder: (context, _) {
-        final boxKey = GlobalKey();
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          final box = boxKey.currentContext!.findRenderObject() as RenderBox;
-          final w = box.getMaxIntrinsicWidth(double.infinity);
-          final h = box.getMaxIntrinsicHeight(w);
-          final dpr = MediaQuery.of(context).devicePixelRatio;
-          constraint.setHeightAndDpr(h, dpr);
-        });
+    return Consumer<ConstraintStore>(
+      builder: (context, constraint, _) {
+        return LayoutBuilder(
+          builder: (context, _) {
+            final boxKey = GlobalKey();
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              final box = boxKey.currentContext!.findRenderObject() as RenderBox;
+              final w = box.getMaxIntrinsicWidth(double.infinity);
+              constraint
+                ..height = box.getMaxIntrinsicHeight(w)
+                ..dpr = MediaQuery
+                    .of(context)
+                    .devicePixelRatio
+                ..updatePlatformHeight();
+            });
 
-        return Container(
-          key: boxKey,
-          child: child,
+            return Container(
+              key: boxKey,
+              child: child,
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class ToolbarWrapper extends StatelessWidget {
+  final Widget? child;
+
+  const ToolbarWrapper({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ConstraintStore>(
+      builder: (context, constraint, _) {
+        return LayoutBuilder(
+          builder: (context, _) {
+            final boxKey = GlobalKey();
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              final box = boxKey.currentContext!.findRenderObject() as RenderBox;
+              final w = box.getMaxIntrinsicWidth(double.infinity);
+              constraint
+                ..toolbarHeight = box.getMaxIntrinsicHeight(w)
+                ..dpr = MediaQuery
+                    .of(context)
+                    .devicePixelRatio;
+            });
+
+            return Container(
+              key: boxKey,
+              child: child,
+            );
+          },
         );
       },
     );

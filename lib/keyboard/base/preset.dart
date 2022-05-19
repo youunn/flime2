@@ -8,11 +8,12 @@ import 'event.dart';
 
 class K {
   final Preset preset;
+  final Rectangle<double> hitBox;
   final String label;
   final KEvent click;
   final KEvent? longClick;
   final String? longClickLabel;
-  final Rectangle<double> hitBox;
+  final bool repeatable;
   final MoreKeysPanel? more;
   late final Rectangle<double>? moreKeysPanelBox;
 
@@ -20,11 +21,12 @@ class K {
 
   K({
     required this.preset,
+    required this.hitBox,
     required this.label,
     required this.click,
     this.longClick,
     this.longClickLabel,
-    required this.hitBox,
+    this.repeatable = false,
     this.more,
   }) {
     if (more == null) {
@@ -52,6 +54,7 @@ class K {
         click = KEvent(),
         longClick = null,
         longClickLabel = null,
+        repeatable = false,
         more = null,
         moreKeysPanelBox = null,
         hitBox = emptyHitBox;
@@ -100,6 +103,7 @@ class KRow extends Iterable<K> {
     required String label,
     KEvent? longClick,
     String? longClickLabel,
+    bool repeatable = false,
     double? width,
     double? height,
     MoreKeysPanel? more,
@@ -115,6 +119,7 @@ class KRow extends Iterable<K> {
       click: click,
       longClick: longClick,
       longClickLabel: longClickLabel,
+      repeatable: repeatable,
       hitBox: hitBox,
       more: more,
     );
@@ -127,6 +132,7 @@ class KRow extends Iterable<K> {
     LogicalKeyboardKey? longClick,
     KEvent? longClickEvent,
     String? longClickLabel,
+    bool repeatable = false,
     double? width,
     double? height,
     MoreKeysPanel? more,
@@ -136,6 +142,30 @@ class KRow extends Iterable<K> {
       label: label ?? logicalKey.keyLabel.toLowerCase(),
       longClick: longClickEvent ?? KEvent(key: longClick),
       longClickLabel: longClickLabel ?? longClick?.keyLabel.toLowerCase(),
+      repeatable: repeatable,
+      width: width,
+      height: height,
+      more: more,
+    );
+  }
+
+  void s(
+    LogicalKeyboardKey logicalKey, {
+    String? label,
+    LogicalKeyboardKey? longClick,
+    KEvent? longClickEvent,
+    String? longClickLabel,
+    bool repeatable = false,
+    double? width,
+    double? height,
+    MoreKeysPanel? more,
+  }) {
+    k(
+      click: KEvent(key: logicalKey, mask: KEvent.modifierShift),
+      label: label ?? logicalKey.keyLabel.toUpperCase(),
+      longClick: longClickEvent ?? KEvent(key: longClick),
+      longClickLabel: longClickLabel ?? longClick?.keyLabel.toLowerCase(),
+      repeatable: repeatable,
       width: width,
       height: height,
       more: more,

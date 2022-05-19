@@ -15,5 +15,13 @@ abstract class InputMethodApi {
 @HostApi()
 abstract class InputConnectionApi {
   void commit(String text);
+
   void send(int code, int mask);
+
+  int getEditorInfo();
+}
+
+@FlutterApi()
+abstract class InputServiceApi {
+  void finalize();
 }

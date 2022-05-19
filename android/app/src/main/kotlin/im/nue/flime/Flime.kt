@@ -18,6 +18,7 @@ class Flime : InputMethodService() {
     private lateinit var flutterView: FlutterView
     private lateinit var binding: KeyboardBinding
     private var insetsUpdater: InsetsUpdater? = null
+    private var inputServiceApi: Pigeon.InputServiceApi? = null;
 
     var inputViewHeight = 0
     val inputView get() = binding.root
@@ -48,6 +49,11 @@ class Flime : InputMethodService() {
             engine.dartExecutor.binaryMessenger,
             InputConnectionApi(this),
         )
+        Pigeon.InputMethodApi.setup(
+            engine.dartExecutor.binaryMessenger,
+            InputMethodApi(this),
+        )
+        inputServiceApi = Pigeon.InputServiceApi(engine.dartExecutor.binaryMessenger);
     }
 
     override fun onCreateInputView(): View {
@@ -95,6 +101,7 @@ class Flime : InputMethodService() {
             flutterView.detachFromFlutterEngine()
         }
         if (::engine.isInitialized) engine.run {
+            inputServiceApi?.finalize {}
             serviceControlSurface.detachFromService()
             lifecycleChannel.appIsDetached()
             destroy()

@@ -15,6 +15,20 @@ extension StringCast on Pointer<Char> {
   }
 }
 
+extension StringPointerCast on Pointer<Pointer<Char>> {
+  Iterable<String> toDartString(int count) sync* {
+    if (this == nullptr) return;
+    for (var i = 0; i < count; i++) {
+      final p = this[i];
+      if (p == nullptr) return;
+      final s = p.toDartString();
+      if (s == null) return;
+      yield s;
+      // free in native library
+    }
+  }
+}
+
 // final debugPrintNativeFunctionPointer =
 //     Pointer.fromFunction<Void Function(Pointer<Int8>)>(debugPrintNative);
 //

@@ -8,6 +8,15 @@ abstract class AbstractKeyboardStatus with Store {
   @observable
   int modifierState = 0;
 
+  @observable
+  bool isComposing = false;
+
+  @observable
+  List<String> candidates = [];
+
+  @observable
+  String? preedit;
+
   @action
   bool setModifier(int mask, {required bool state}) {
     if ((modifierState & mask != 0) == state) return false;
@@ -19,11 +28,12 @@ abstract class AbstractKeyboardStatus with Store {
     return true;
   }
 
+  bool hasModifier(int mask) {
+    return modifierState & mask != 0;
+  }
+
   @action
   void resetModifier() {
     if (modifierState != 0) modifierState = 0;
   }
-
-  @computed
-  bool get hasModifier => modifierState != 0;
 }

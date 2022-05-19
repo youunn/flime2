@@ -4,12 +4,9 @@ final logicalKeyToAndroidMap = kAndroidToLogicalKey.map((key, value) => MapEntry
 // final logicalKeyToGlfwMap = kGlfwToLogicalKey.map((key, value) => MapEntry(value, key));
 // final logicalKeyToGtkMap = kGtkToLogicalKey.map((key, value) => MapEntry(value, key));
 
-// TODO: add map for keys with mask like colon
-// NOTE: braceLeft = Shift + 9
 final logicalKeyToX11Map = <LogicalKeyboardKey, int>{
   // glfw
   LogicalKeyboardKey.space: 32,
-  LogicalKeyboardKey.quote: 39,
   LogicalKeyboardKey.comma: 44,
   LogicalKeyboardKey.minus: 45,
   LogicalKeyboardKey.period: 46,
@@ -55,7 +52,6 @@ final logicalKeyToX11Map = <LogicalKeyboardKey, int>{
   LogicalKeyboardKey.bracketLeft: 91,
   LogicalKeyboardKey.backslash: 92,
   LogicalKeyboardKey.bracketRight: 93,
-  LogicalKeyboardKey.backquote: 96,
 
   // gtk
   LogicalKeyboardKey.intlYen: 165,
@@ -200,13 +196,36 @@ final logicalKeyToX11Map = <LogicalKeyboardKey, int>{
   SmallLetter.keyX: 120,
   SmallLetter.keyY: 121,
   SmallLetter.keyZ: 122,
+
+  // shift
+  LogicalKeyboardKey.backquote: 0x60,
+  LogicalKeyboardKey.exclamation: 0x21,
+  LogicalKeyboardKey.at: 0x40,
+  LogicalKeyboardKey.numberSign: 0x23,
+  LogicalKeyboardKey.dollar: 0x24,
+  LogicalKeyboardKey.percent: 0x25,
+  LogicalKeyboardKey.caret: 0x5e,
+  LogicalKeyboardKey.ampersand: 0x26,
+  LogicalKeyboardKey.asterisk: 0x2a,
+  LogicalKeyboardKey.parenthesisLeft: 0x28,
+  LogicalKeyboardKey.parenthesisRight: 0x29,
+  LogicalKeyboardKey.underscore: 0x5f,
+  LogicalKeyboardKey.add: 0x2b,
+  LogicalKeyboardKey.braceLeft: 0x7b,
+  LogicalKeyboardKey.braceRight: 0x7d,
+  LogicalKeyboardKey.bar: 0x7c,
+  LogicalKeyboardKey.colon: 0x3b,
+  LogicalKeyboardKey.quote: 0x22,
+  LogicalKeyboardKey.less: 0x3c,
+  LogicalKeyboardKey.greater: 0x3e,
+  LogicalKeyboardKey.question: 0x3f,
 };
 
 class SmallLetter extends LogicalKeyboardKey {
   const SmallLetter(super.keyId);
 
   @override
-  String get keyLabel => _smallLetterkeyLabels[keyId] ?? '';
+  String get keyLabel => _smallLetterKeyLabels[keyId] ?? '';
 
   static const SmallLetter keyA = SmallLetter(0x00300000000 | 0x00000000061);
   static const SmallLetter keyB = SmallLetter(0x00300000000 | 0x00000000062);
@@ -235,7 +254,7 @@ class SmallLetter extends LogicalKeyboardKey {
   static const SmallLetter keyY = SmallLetter(0x00300000000 | 0x00000000079);
   static const SmallLetter keyZ = SmallLetter(0x00300000000 | 0x0000000007a);
 
-  static const Map<int, String> _smallLetterkeyLabels = <int, String>{
+  static const Map<int, String> _smallLetterKeyLabels = <int, String>{
     0x00300000061: 'a',
     0x00300000062: 'b',
     0x00300000063: 'c',
@@ -264,3 +283,70 @@ class SmallLetter extends LogicalKeyboardKey {
     0x0030000007a: 'z',
   };
 }
+
+final upperCaseMap = <SmallLetter, LogicalKeyboardKey>{
+  SmallLetter.keyA: LogicalKeyboardKey.keyA,
+  SmallLetter.keyB: LogicalKeyboardKey.keyB,
+  SmallLetter.keyC: LogicalKeyboardKey.keyC,
+  SmallLetter.keyD: LogicalKeyboardKey.keyD,
+  SmallLetter.keyE: LogicalKeyboardKey.keyE,
+  SmallLetter.keyF: LogicalKeyboardKey.keyF,
+  SmallLetter.keyG: LogicalKeyboardKey.keyG,
+  SmallLetter.keyH: LogicalKeyboardKey.keyH,
+  SmallLetter.keyI: LogicalKeyboardKey.keyI,
+  SmallLetter.keyJ: LogicalKeyboardKey.keyJ,
+  SmallLetter.keyK: LogicalKeyboardKey.keyK,
+  SmallLetter.keyL: LogicalKeyboardKey.keyL,
+  SmallLetter.keyM: LogicalKeyboardKey.keyM,
+  SmallLetter.keyN: LogicalKeyboardKey.keyN,
+  SmallLetter.keyO: LogicalKeyboardKey.keyO,
+  SmallLetter.keyP: LogicalKeyboardKey.keyP,
+  SmallLetter.keyQ: LogicalKeyboardKey.keyQ,
+  SmallLetter.keyR: LogicalKeyboardKey.keyR,
+  SmallLetter.keyS: LogicalKeyboardKey.keyS,
+  SmallLetter.keyT: LogicalKeyboardKey.keyT,
+  SmallLetter.keyU: LogicalKeyboardKey.keyU,
+  SmallLetter.keyV: LogicalKeyboardKey.keyV,
+  SmallLetter.keyW: LogicalKeyboardKey.keyW,
+  SmallLetter.keyX: LogicalKeyboardKey.keyX,
+  SmallLetter.keyY: LogicalKeyboardKey.keyY,
+  SmallLetter.keyZ: LogicalKeyboardKey.keyZ,
+};
+
+final withShiftMap = <LogicalKeyboardKey, LogicalKeyboardKey>{
+  LogicalKeyboardKey.backquote: LogicalKeyboardKey.tilde,
+  LogicalKeyboardKey.exclamation: LogicalKeyboardKey.digit1,
+  LogicalKeyboardKey.at: LogicalKeyboardKey.digit2,
+  LogicalKeyboardKey.numberSign: LogicalKeyboardKey.digit3,
+  LogicalKeyboardKey.dollar: LogicalKeyboardKey.digit4,
+  LogicalKeyboardKey.percent: LogicalKeyboardKey.digit5,
+  LogicalKeyboardKey.caret: LogicalKeyboardKey.digit6,
+  LogicalKeyboardKey.ampersand: LogicalKeyboardKey.digit7,
+  LogicalKeyboardKey.asterisk: LogicalKeyboardKey.digit8,
+  LogicalKeyboardKey.parenthesisLeft: LogicalKeyboardKey.digit9,
+  LogicalKeyboardKey.parenthesisRight: LogicalKeyboardKey.digit0,
+  LogicalKeyboardKey.underscore: LogicalKeyboardKey.minus,
+  LogicalKeyboardKey.add: LogicalKeyboardKey.equal,
+  LogicalKeyboardKey.braceLeft: LogicalKeyboardKey.bracketLeft,
+  LogicalKeyboardKey.braceRight: LogicalKeyboardKey.bracketRight,
+  LogicalKeyboardKey.bar: LogicalKeyboardKey.backslash,
+  LogicalKeyboardKey.colon: LogicalKeyboardKey.semicolon,
+  LogicalKeyboardKey.quote: LogicalKeyboardKey.quoteSingle,
+  LogicalKeyboardKey.less: LogicalKeyboardKey.comma,
+  LogicalKeyboardKey.greater: LogicalKeyboardKey.period,
+  LogicalKeyboardKey.question: LogicalKeyboardKey.slash,
+};
+
+// TODO: label to logical key map
+const numberToLogicalKeyMap = <int, LogicalKeyboardKey>{
+  0: LogicalKeyboardKey.digit0,
+  1: LogicalKeyboardKey.digit1,
+  2: LogicalKeyboardKey.digit2,
+  3: LogicalKeyboardKey.digit3,
+  4: LogicalKeyboardKey.digit4,
+  5: LogicalKeyboardKey.digit5,
+  6: LogicalKeyboardKey.digit6,
+  7: LogicalKeyboardKey.digit7,
+  8: LogicalKeyboardKey.digit8,
+  9: LogicalKeyboardKey.digit9,
+};

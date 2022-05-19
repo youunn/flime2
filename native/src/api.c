@@ -12,11 +12,11 @@
 // #include "cxxapi.h"
 
 #ifdef __ANDROID_API__
-#    define LOG_VERBOSE(...) __android_log_print(ANDROID_LOG_VERBOSE, "native", __VA_ARGS__);
-#    define LOG_DEBUG(...) __android_log_print(ANDROID_LOG_DEBUG, "native", __VA_ARGS__);
-#    define LOG_INFO(...) __android_log_print(ANDROID_LOG_INFO, "native", __VA_ARGS__);
-#    define LOG_WARN(...) __android_log_print(ANDROID_LOG_WARN, "native", __VA_ARGS__);
-#    define LOG_ERROR(...) __android_log_print(ANDROID_LOG_ERROR, "native", __VA_ARGS__);
+#    define LOG_VERBOSE(...) __android_log_print(ANDROID_LOG_VERBOSE, "rime_bridge", __VA_ARGS__);
+#    define LOG_DEBUG(...) __android_log_print(ANDROID_LOG_DEBUG, "rime_bridge", __VA_ARGS__);
+#    define LOG_INFO(...) __android_log_print(ANDROID_LOG_INFO, "rime_bridge", __VA_ARGS__);
+#    define LOG_WARN(...) __android_log_print(ANDROID_LOG_WARN, "rime_bridge", __VA_ARGS__);
+#    define LOG_ERROR(...) __android_log_print(ANDROID_LOG_ERROR, "rime_bridge", __VA_ARGS__);
 #else
 #    define LOG_VERBOSE
 #    define LOG_DEBUG
@@ -31,8 +31,6 @@ static RimeApi* rime;
 // int get_modifier(const char* name) { return get_modifier_by_name(name); }
 //
 // int get_keycode(const char* name) { return get_keycode_by_name(name); }
-
-void free_string(char* string) { free(string); }
 
 int init() {
     rime = rime_get_api();
@@ -64,21 +62,68 @@ int start(const char* dir) {
 
 int process_key(int code, int mask) {
     if (rime == NULL) return 0;
-    return rime->process_key(session_id, code, mask);
+    // LOG_INFO("processing: code, %d, mask, %d", code, mask);
+    int result = rime->process_key(session_id, code, mask);
+    return result;
 }
 
 char* get_commit() {
     RIME_STRUCT(RimeCommit, commit);
     if (!rime->get_commit(session_id, &commit)) return NULL;
     char* result = strdup(commit.text);
-    LOG_INFO("commit result: %s", result);
     RimeFreeCommit(&commit);
     return result;
 }
 
 int finalize() {
+    if (!rime) return 1;
     rime->destroy_session(session_id);
     session_id = 0;
     rime->finalize();
     return 0;
+}
+
+void free_string(char* string) { free(string); }
+
+void free_context(SimpleContext* context) {
+    for (int i = 0; i < context->count; i++) {
+        free(context->candidates[i]);
+    }
+    free(context->candidates);
+    free(context->preedit);
+    free(context);
+}
+
+int is_composing() {
+    RIME_STRUCT(RimeStatus, status);
+    if (!rime->get_status(session_id, &status)) return false;
+    int result = status.is_composing;
+    rime->free_status(&status);
+    return result;
+}
+
+SimpleContext* get_context() {
+    RIME_STRUCT(RimeContext, context);
+    if (!rime->get_context(session_id, &context)) return NULL;
+    int count = context.menu.num_candidates;
+    if (count <= 0) {
+        rime->free_context(&context);
+        return NULL;
+    }
+
+    char* preedit = strdup(context.composition.preedit);
+    char** candidates = malloc(count * sizeof(char*));
+
+    for (int i = 0; i < count; i++) {
+        candidates[i] = strdup(context.menu.candidates[i].text);
+    }
+
+    SimpleContext* result = malloc(sizeof(SimpleContext));
+    result->preedit = preedit;
+    result->candidates = candidates;
+    result->count = count;
+
+    rime->free_context(&context);
+
+    return result;
 }

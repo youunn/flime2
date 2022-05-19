@@ -41,4 +41,8 @@ class InputConnectionApi(private val inputMethodService: InputMethodService) :
         }
         inputMethodService.currentInputConnection.endBatchEdit()
     }
+
+    override fun getEditorInfo(): Long {
+        return inputMethodService.currentInputEditorInfo.actionId.toLong()
+    }
 }

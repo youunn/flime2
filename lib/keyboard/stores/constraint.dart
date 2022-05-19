@@ -6,36 +6,29 @@ part 'constraint.g.dart';
 class ConstraintStore = AbstractConstraintStore with _$ConstraintStore;
 
 abstract class AbstractConstraintStore with Store {
-  @readonly
-  double _height = 192;
-  @readonly
-  double _dpr = 1;
+  @observable
+  double height = 262;
+  @observable
+  double dpr = 1;
+  @observable
+  double toolbarHeight = 40;
 
   final LayoutApi layoutApi;
 
   AbstractConstraintStore(this.layoutApi);
 
   @computed
-  int get totalHeightInPx => (_height * _dpr).toInt();
+  double get totalHeight => height + toolbarHeight;
 
-  // ignore: unused_field
-  late final ReactionDisposer _notifyNative;
+  @computed
+  int get totalHeightInPx => (totalHeight * dpr).toInt();
+  int _cachedHeight = 0;
 
-  void setupReactions() {
-    _notifyNative = reaction(
-      (_) => totalHeightInPx,
-      (int h) {
-        if (h != 0) {
-          layoutApi.updateHeight(h);
-        }
-      },
-      delay: 100,
-    );
-  }
-
-  @action
-  void setHeightAndDpr(double h, double d) {
-    _dpr = d;
-    _height = h;
+  void updatePlatformHeight() {
+    final h = totalHeightInPx;
+    if (h != _cachedHeight) {
+      layoutApi.updateHeight(h);
+      _cachedHeight = h;
+    }
   }
 }

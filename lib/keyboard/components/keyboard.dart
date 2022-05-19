@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flime/api/platform_api.g.dart';
-import 'package:flime/keyboard/base/event.dart';
 import 'package:flime/keyboard/base/preset.dart';
 import 'package:flime/keyboard/services/input_service.dart';
 import 'package:flime/keyboard/stores/settings.dart';
@@ -35,7 +36,7 @@ class _MainKeyboardState extends State<MainKeyboard> {
     return Consumer3<SettingsStore, InputService, InputConnectionApi>(
       builder: (_, settings, inputService, inputConnectionApi, child) {
         return Observer(
-          builder: (_) {
+          builder: (context) {
             // TODO: replace with custom RenderObject
             return RawGestureDetector(
               behavior: HitTestBehavior.translucent,
@@ -46,7 +47,7 @@ class _MainKeyboardState extends State<MainKeyboard> {
                     instance.onTapUp = (details) async {
                       final k = _currentK;
                       if (k != _dummy) {
-                        await processKey(k.click, inputService, inputConnectionApi);
+                        await inputService.handleEvent(k.click, context, inputConnectionApi);
                         setState(() {
                           _currentK = _dummy;
                         });
@@ -66,18 +67,29 @@ class _MainKeyboardState extends State<MainKeyboard> {
                           });
                         }
                       }
-                      ..onLongPressStart = (details) {
+                      ..onLongPressStart = (details) async {
                         setState(() {
                           _longPressed = true;
                         });
+
+                        final k = _currentK;
+                        if (k.repeatable) {
+                          while (_longPressed) {
+                            await inputService.handleEvent(k.click,context, inputConnectionApi);
+                            await Future.delayed(settings.repeatInterval);
+                          }
+                        }
                       }
                       ..onLongPressEnd = (details) async {
                         final k = _currentK;
+                        final more = k.more;
+                        final moreBox = k.moreKeysPanelBox;
+
                         if (k != _dummy) {
-                          final more = k.more;
-                          final moreBox = k.moreKeysPanelBox;
-                          if (more == null || moreBox == null) {
-                            await processKey(k.longClick ?? k.click, inputService, inputConnectionApi);
+                          if (k.repeatable) {
+                            // ignore
+                          } else if (more == null || moreBox == null) {
+                            await inputService.handleEvent(k.longClick ?? k.click,context, inputConnectionApi);
                           } else {
                             // TODO: extract method or use detectKey
                             var minDistance = double.maxFinite;
@@ -95,13 +107,15 @@ class _MainKeyboardState extends State<MainKeyboard> {
                             }
 
                             if (selected != null) {
-                              await processKey(selected.click, inputService, inputConnectionApi);
+                              await inputService.handleEvent(selected.click,context, inputConnectionApi);
                             }
                           }
+
                           setState(() {
                             _currentK = _dummy;
                           });
                         }
+
                         if (_longPressed) {
                           setState(() {
                             _longPressed = false;
@@ -142,6 +156,7 @@ class _MainKeyboardState extends State<MainKeyboard> {
                           width: k.hitBox.width * screenWidth,
                           child: Center(
                             child: Text(
+                              // TODO: different label for different editor info of enter key
                               k.label,
                               style: TextStyle(fontSize: widget.preset.fontSize),
                             ),
@@ -152,6 +167,7 @@ class _MainKeyboardState extends State<MainKeyboard> {
                 ),
             ],
           ),
+          // TODO: style
           if (_currentK != _dummy)
             if (_currentK.more == null || !_longPressed)
               Positioned(
@@ -241,18 +257,5 @@ class _MainKeyboardState extends State<MainKeyboard> {
         ],
       ),
     );
-  }
-
-  Future<void> processKey(KEvent event, InputService inputService, InputConnectionApi inputConnectionApi) async {
-    if (event.code != null) {
-      if (inputService.processKey(event.code!, event.mask)) {
-        final commit = inputService.getCommit();
-        if (commit != '') {
-          await inputConnectionApi.commit(commit);
-        }
-      } else {
-        await inputConnectionApi.send(event.androidCode!, event.androidMask);
-      }
-    }
   }
 }

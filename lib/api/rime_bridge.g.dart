@@ -19,20 +19,6 @@ class RimeBridge {
           lookup)
       : _lookup = lookup;
 
-  void free_string(
-    ffi.Pointer<ffi.Char> string,
-  ) {
-    return _free_string(
-      string,
-    );
-  }
-
-  late final _free_stringPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Char>)>>(
-          'free_string');
-  late final _free_string =
-      _free_stringPtr.asFunction<void Function(ffi.Pointer<ffi.Char>)>();
-
   int init() {
     return _init();
   }
@@ -87,4 +73,59 @@ class RimeBridge {
   late final _finalizePtr =
       _lookup<ffi.NativeFunction<ffi.Int Function()>>('finalize');
   late final _finalize = _finalizePtr.asFunction<int Function()>();
+
+  void free_string(
+    ffi.Pointer<ffi.Char> string,
+  ) {
+    return _free_string(
+      string,
+    );
+  }
+
+  late final _free_stringPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Char>)>>(
+          'free_string');
+  late final _free_string =
+      _free_stringPtr.asFunction<void Function(ffi.Pointer<ffi.Char>)>();
+
+  void free_context(
+    ffi.Pointer<SimpleContext> context,
+  ) {
+    return _free_context(
+      context,
+    );
+  }
+
+  late final _free_contextPtr = _lookup<
+          ffi.NativeFunction<ffi.Void Function(ffi.Pointer<SimpleContext>)>>(
+      'free_context');
+  late final _free_context =
+      _free_contextPtr.asFunction<void Function(ffi.Pointer<SimpleContext>)>();
+
+  int is_composing() {
+    return _is_composing();
+  }
+
+  late final _is_composingPtr =
+      _lookup<ffi.NativeFunction<ffi.Int Function()>>('is_composing');
+  late final _is_composing = _is_composingPtr.asFunction<int Function()>();
+
+  ffi.Pointer<SimpleContext> get_context() {
+    return _get_context();
+  }
+
+  late final _get_contextPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<SimpleContext> Function()>>(
+          'get_context');
+  late final _get_context =
+      _get_contextPtr.asFunction<ffi.Pointer<SimpleContext> Function()>();
+}
+
+class SimpleContext extends ffi.Struct {
+  external ffi.Pointer<ffi.Char> preedit;
+
+  external ffi.Pointer<ffi.Pointer<ffi.Char>> candidates;
+
+  @ffi.Int()
+  external int count;
 }
