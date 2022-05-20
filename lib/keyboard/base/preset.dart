@@ -181,7 +181,6 @@ class Preset extends Iterable<KRow> {
   var _cached = false;
   late List<List<K>> neighborsOfCells;
 
-  // 迷之数字，可能会改
   static const _defaultWidth = 0.1;
   static const _searchFactor = 1.2; // 迷之数字
   static const threshold = _defaultWidth * _searchFactor;
@@ -288,17 +287,17 @@ class Preset extends Iterable<KRow> {
       for (final r in this) {
         for (final k in r) {
           // vertical
-          final topPixel = k.hitBox.top - threshold;
-          final yDeltaToGrid = topPixel % cellHeight;
-          final yMiddleOfTopCell = topPixel - yDeltaToGrid + halfCellHeight;
+          final areaTop = k.hitBox.top - threshold;
+          final yDeltaToGrid = areaTop % cellHeight;
+          final yMiddleOfTopCell = areaTop - yDeltaToGrid + halfCellHeight;
           final roundUpFlag = yDeltaToGrid <= halfCellHeight ? 0 : 1;
           final yStart = max(halfCellHeight, yMiddleOfTopCell + roundUpFlag * cellHeight);
-          final yEnd = min(maxHeight, k.hitBox.top + threshold);
+          final yEnd = min(maxHeight, k.hitBox.bottom + threshold);
 
           // horizontal
-          final leftPixel = k.hitBox.left - threshold;
-          final xDeltaToGrid = leftPixel % _cellWidth;
-          final xMiddleOfLeftCell = leftPixel - xDeltaToGrid + halfCellWidth;
+          final areaLeft = k.hitBox.left - threshold;
+          final xDeltaToGrid = areaLeft % _cellWidth;
+          final xMiddleOfLeftCell = areaLeft - xDeltaToGrid + halfCellWidth;
           final roundLeftFlag = xDeltaToGrid <= halfCellWidth ? 0 : 1;
           final xStart = max(halfCellWidth, xMiddleOfLeftCell + roundLeftFlag * _cellWidth);
           final xEnd = min(1, k.hitBox.right + threshold);
