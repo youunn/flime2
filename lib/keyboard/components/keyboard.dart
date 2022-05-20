@@ -75,7 +75,7 @@ class _MainKeyboardState extends State<MainKeyboard> {
                         final k = _currentK;
                         if (k.repeatable) {
                           while (_longPressed) {
-                            await inputService.handleEvent(k.click,context, inputConnectionApi);
+                            await inputService.handleEvent(k.click, context, inputConnectionApi);
                             await Future.delayed(settings.repeatInterval);
                           }
                         }
@@ -89,7 +89,7 @@ class _MainKeyboardState extends State<MainKeyboard> {
                           if (k.repeatable) {
                             // ignore
                           } else if (more == null || moreBox == null) {
-                            await inputService.handleEvent(k.longClick ?? k.click,context, inputConnectionApi);
+                            await inputService.handleEvent(k.longClick ?? k.click, context, inputConnectionApi);
                           } else {
                             // TODO: extract method or use detectKey
                             var minDistance = double.maxFinite;
@@ -107,7 +107,7 @@ class _MainKeyboardState extends State<MainKeyboard> {
                             }
 
                             if (selected != null) {
-                              await inputService.handleEvent(selected.click,context, inputConnectionApi);
+                              await inputService.handleEvent(selected.click, context, inputConnectionApi);
                             }
                           }
 
@@ -197,9 +197,10 @@ class _MainKeyboardState extends State<MainKeyboard> {
                   ),
                 ),
               )
-            else
+            else ...[
+              // more keys panel
               Builder(
-                builder: (BuildContext context) {
+                builder: (context) {
                   final more = _currentK.more!;
                   final moreBox = _currentK.moreKeysPanelBox!;
 
@@ -240,20 +241,25 @@ class _MainKeyboardState extends State<MainKeyboard> {
                             ),
                           ),
                         ),
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.background,
-                          ),
-                          child: SizedBox(
-                            height: _currentK.hitBox.height * screenWidth,
-                            width: _currentK.hitBox.width * screenWidth,
-                          ),
-                        ),
                       ],
                     ),
                   );
                 },
               ),
+              Positioned(
+                left: _currentK.hitBox.left * screenWidth,
+                top: _currentK.hitBox.top * screenWidth,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background,
+                  ),
+                  child: SizedBox(
+                    height: _currentK.hitBox.height * screenWidth,
+                    width: _currentK.hitBox.width * screenWidth,
+                  ),
+                ),
+              ),
+            ],
         ],
       ),
     );
