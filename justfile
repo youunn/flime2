@@ -86,5 +86,8 @@ cp-boost:
 run:
     flutter run
 
+install-apk:
+    adb -d install build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+
 release:
     flutter build apk --split-per-abi --release --verbose

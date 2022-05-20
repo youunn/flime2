@@ -60,10 +60,30 @@ class PrimaryKeyboardLayout extends StatelessWidget {
             ),
             label: 'Shift',
             width: 0.15)
-        ..c(Sl.keyZ)
-        ..c(Sl.keyX)
-        ..c(Sl.keyC)
-        ..c(Sl.keyV)
+        ..k(
+          click: KEvent(key: Sl.keyZ),
+          label: 'z',
+          longClick: KEvent(key: Sl.keyA, mask: KEvent.modifierControl),
+          longClickLabel: 'V',
+        )
+        ..k(
+          click: KEvent(key: Sl.keyX),
+          label: 'x',
+          longClick: KEvent(key: Sl.keyX, mask: KEvent.modifierControl),
+          longClickLabel: 'D',
+        )
+        ..k(
+          click: KEvent(key: Sl.keyC),
+          label: 'c',
+          longClick: KEvent(key: Sl.keyC, mask: KEvent.modifierControl),
+          longClickLabel: 'Y',
+        )
+        ..k(
+          click: KEvent(key: Sl.keyV),
+          label: 'v',
+          longClick: KEvent(key: Sl.keyV, mask: KEvent.modifierControl),
+          longClickLabel: 'P',
+        )
         ..c(Sl.keyB, longClick: Lk.backslash)
         ..c(Sl.keyN, longClick: Lk.question)
         ..c(Sl.keyM, longClick: Lk.slash)

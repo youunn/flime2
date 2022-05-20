@@ -121,7 +121,11 @@ class Toolbar extends StatelessWidget {
             child: const Center(
               child: Icon(Icons.settings),
             ),
-            onTap: () {},
+            onTap: () {
+              // left
+              final event = KEvent(key: LogicalKeyboardKey.arrowLeft);
+              context.read<InputService>().handleEvent(event, context, context.read<InputConnectionApi>());
+            },
           ),
         ),
         Expanded(
@@ -129,7 +133,11 @@ class Toolbar extends StatelessWidget {
             child: const Center(
               child: Icon(Icons.more_horiz),
             ),
-            onTap: () {},
+            onTap: () {
+              // right
+              final event = KEvent(key: LogicalKeyboardKey.arrowRight);
+              context.read<InputService>().handleEvent(event, context, context.read<InputConnectionApi>());
+            },
           ),
         ),
         Expanded(
