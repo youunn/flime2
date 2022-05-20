@@ -45,13 +45,13 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
       Atom(name: 'AbstractKeyboardStatus.candidates', context: context);
 
   @override
-  List<String> get candidates {
+  List<String?> get candidates {
     _$candidatesAtom.reportRead();
     return super.candidates;
   }
 
   @override
-  set candidates(List<String> value) {
+  set candidates(List<String?> value) {
     _$candidatesAtom.reportWrite(value, super.candidates, () {
       super.candidates = value;
     });
@@ -61,13 +61,13 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
       Atom(name: 'AbstractKeyboardStatus.comments', context: context);
 
   @override
-  List<String> get comments {
+  List<String?> get comments {
     _$commentsAtom.reportRead();
     return super.comments;
   }
 
   @override
-  set comments(List<String> value) {
+  set comments(List<String?> value) {
     _$commentsAtom.reportWrite(value, super.comments, () {
       super.comments = value;
     });

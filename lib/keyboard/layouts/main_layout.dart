@@ -186,11 +186,22 @@ class Candidates extends StatelessWidget {
                           flex: 1,
                           child: InkWell(
                             child: Center(
-                              child: Text(
-                                status.candidates[i],
-                                style: status.candidates[i].length <= 2
-                                    ? TextStyle(fontSize: Theme.of(context).textTheme.headline6?.fontSize)
-                                    : TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium?.fontSize),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    status.candidates[i] ?? '',
+                                    style: (status.candidates[i]?.length ?? 0) <= 2
+                                        ? TextStyle(fontSize: Theme.of(context).textTheme.headline6?.fontSize)
+                                        : TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium?.fontSize),
+                                  ),
+                                  if (status.comments[i]?.isNotEmpty == true)
+                                    Text(
+                                      status.comments[i] ?? '',
+                                      style: TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize),
+                                    ),
+                                ],
                               ),
                             ),
                             onTap: () {

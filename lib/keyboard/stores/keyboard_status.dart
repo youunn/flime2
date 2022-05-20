@@ -12,10 +12,10 @@ abstract class AbstractKeyboardStatus with Store {
   bool isComposing = false;
 
   @observable
-  List<String> candidates = [];
+  List<String?> candidates = [];
 
   @observable
-  List<String> comments = [];
+  List<String?> comments = [];
 
   @observable
   String? preedit;
