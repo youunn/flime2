@@ -76,7 +76,7 @@ class PrimaryKeyboardLayout extends StatelessWidget {
           click: KEvent(
             command: (context, _) {
               // TODO: animation
-              context.router.replace(const SymbolKeyboardRoute());
+              context.router.replace(const NumberKeyboardRoute());
             },
           ),
           label: '123',

@@ -26,9 +26,9 @@ class _$KeyboardRouter extends RootStackRouter {
       return MaterialPageX<dynamic>(
           routeData: routeData, child: const PrimaryKeyboardLayout());
     },
-    SymbolKeyboardRoute.name: (routeData) {
+    NumberKeyboardRoute.name: (routeData) {
       return MaterialPageX<dynamic>(
-          routeData: routeData, child: const SymbolKeyboardLayout());
+          routeData: routeData, child: const NumberKeyboardLayout());
     }
   };
 
@@ -42,8 +42,8 @@ class _$KeyboardRouter extends RootStackRouter {
               fullMatch: true),
           RouteConfig(PrimaryKeyboardRoute.name,
               path: 'primary', parent: MainRoute.name),
-          RouteConfig(SymbolKeyboardRoute.name,
-              path: 'symbol', parent: MainRoute.name)
+          RouteConfig(NumberKeyboardRoute.name,
+              path: 'number', parent: MainRoute.name)
         ])
       ];
 }
@@ -67,9 +67,9 @@ class PrimaryKeyboardRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [SymbolKeyboardLayout]
-class SymbolKeyboardRoute extends PageRouteInfo<void> {
-  const SymbolKeyboardRoute() : super(SymbolKeyboardRoute.name, path: 'symbol');
+/// [NumberKeyboardLayout]
+class NumberKeyboardRoute extends PageRouteInfo<void> {
+  const NumberKeyboardRoute() : super(NumberKeyboardRoute.name, path: 'number');
 
-  static const String name = 'SymbolKeyboardRoute';
+  static const String name = 'NumberKeyboardRoute';
 }

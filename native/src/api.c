@@ -88,8 +88,10 @@ void free_string(char* string) { free(string); }
 void free_context(SimpleContext* context) {
     for (int i = 0; i < context->count; i++) {
         free(context->candidates[i]);
+        free(context->comments[i]);
     }
     free(context->candidates);
+    free(context->comments);
     free(context->preedit);
     free(context);
 }
@@ -111,16 +113,37 @@ SimpleContext* get_context() {
         return NULL;
     }
 
-    char* preedit = strdup(context.composition.preedit);
+    char* preedit;
+    if (!context.composition.preedit)
+        preedit = NULL;
+    else
+        preedit = strdup(context.composition.preedit);
+
     char** candidates = malloc(count * sizeof(char*));
+    char** comments = malloc(count * sizeof(char*));
 
     for (int i = 0; i < count; i++) {
-        candidates[i] = strdup(context.menu.candidates[i].text);
+        RimeCandidate* rime_candidates = &context.menu.candidates[i];
+        if (!rime_candidates) {
+            candidates[i] = NULL;
+            comments[i] = NULL;
+        } else {
+            if (!rime_candidates->text)
+                candidates[i] = NULL;
+            else
+                candidates[i] = strdup(rime_candidates->text);
+
+            if (!rime_candidates->comment)
+                comments[i] = NULL;
+            else
+                comments[i] = strdup(rime_candidates->comment);
+        }
     }
 
     SimpleContext* result = malloc(sizeof(SimpleContext));
     result->preedit = preedit;
     result->candidates = candidates;
+    result->comments = comments;
     result->count = count;
 
     rime->free_context(&context);

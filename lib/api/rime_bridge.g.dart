@@ -126,6 +126,8 @@ class SimpleContext extends ffi.Struct {
 
   external ffi.Pointer<ffi.Pointer<ffi.Char>> candidates;
 
+  external ffi.Pointer<ffi.Pointer<ffi.Char>> comments;
+
   @ffi.Int()
   external int count;
 }

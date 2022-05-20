@@ -189,7 +189,7 @@ class Preset extends Iterable<KRow> {
   static const _vGridCount = 20;
   static const _cellsCount = _hGridCount * _vGridCount;
   static const _cellWidth = 1 / _hGridCount;
-  late final double _cachedTotalHeight;
+  double? _cachedTotalHeight;
   late final double _cachedCellHeight;
 
   Preset({
@@ -202,8 +202,8 @@ class Preset extends Iterable<KRow> {
   @override
   Iterator<KRow> get iterator => rows.iterator;
 
-  // TODO: use cached value
-  double get totalHeight => rows.isNotEmpty ? rows.last.height + rows.last.y : 0;
+  double get totalHeight =>
+      _cachedTotalHeight ?? (_cachedTotalHeight = rows.isNotEmpty ? rows.last.height + rows.last.y : 0.0);
 
   double get maxRowWidth => rows.fold(
         0,
@@ -263,7 +263,7 @@ class Preset extends Iterable<KRow> {
     final x = offset.dx / screenWidth;
     final y = offset.dy / screenWidth;
 
-    if (x >= 0 && x <= 1 && y >= 0 && y <= _cachedTotalHeight) {
+    if (x >= 0 && x <= 1 && y >= 0 && y <= totalHeight) {
       final index = y ~/ _cachedCellHeight * _hGridCount + x ~/ _cellWidth;
       if (index < _cellsCount) {
         return neighborsOfCells[index];
@@ -316,7 +316,6 @@ class Preset extends Iterable<KRow> {
         }
       }
 
-      _cachedTotalHeight = maxHeight;
       _cachedCellHeight = cellHeight;
       _cached = true;
     });

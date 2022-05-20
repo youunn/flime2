@@ -49,8 +49,7 @@ class RimeService implements InputService {
   Future<void> handleEvent(KEvent event, BuildContext context, InputConnectionApi inputConnectionApi) async {
     final code = event.code;
     if (code != null) {
-      final mask = event.mask | _keyboardStatus.modifierState;
-      if (processKey(code, mask)) {
+      if (processKey(code, event.mask | _keyboardStatus.modifierState)) {
         final commit = getCommit();
         getContext();
         if (commit != '') {
@@ -58,8 +57,9 @@ class RimeService implements InputService {
         }
       } else {
         final code = event.androidCode;
+        final androidMask = event.androidMask;
         if (code != null) {
-          await inputConnectionApi.send(code, KEvent.toAndroidMask(mask));
+          await inputConnectionApi.send(code, androidMask | KEvent.getAndroidMask(_keyboardStatus.modifierState));
         }
       }
     } else {
@@ -92,6 +92,7 @@ class RimeService implements InputService {
     if (context == nullptr) return;
     _keyboardStatus
       ..candidates = context.ref.candidates.toDartString(context.ref.count).toList()
+      ..comments = context.ref.comments.toDartString(context.ref.count).toList()
       ..preedit = context.ref.preedit.toDartString();
 
     rimeBridge.free_context(context);

@@ -57,6 +57,22 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
     });
   }
 
+  late final _$commentsAtom =
+      Atom(name: 'AbstractKeyboardStatus.comments', context: context);
+
+  @override
+  List<String> get comments {
+    _$commentsAtom.reportRead();
+    return super.comments;
+  }
+
+  @override
+  set comments(List<String> value) {
+    _$commentsAtom.reportWrite(value, super.comments, () {
+      super.comments = value;
+    });
+  }
+
   late final _$preeditAtom =
       Atom(name: 'AbstractKeyboardStatus.preedit', context: context);
 
@@ -104,6 +120,7 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
 modifierState: ${modifierState},
 isComposing: ${isComposing},
 candidates: ${candidates},
+comments: ${comments},
 preedit: ${preedit}
     ''';
   }

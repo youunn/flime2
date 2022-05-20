@@ -87,6 +87,7 @@ class Toolbar extends StatelessWidget {
               child: Icon(Icons.keyboard),
             ),
             onTap: () {
+              // pick other ime
               context.read<InputMethodApi>().pick();
             },
           ),
@@ -97,6 +98,7 @@ class Toolbar extends StatelessWidget {
               child: Icon(Icons.edit),
             ),
             onTap: () {
+              // schema options
               final event = KEvent(key: LogicalKeyboardKey.backquote, mask: KEvent.modifierControl);
               context.read<InputService>().handleEvent(event, context, context.read<InputConnectionApi>());
             },
@@ -108,7 +110,9 @@ class Toolbar extends StatelessWidget {
               child: Icon(Icons.translate),
             ),
             onTap: () {
-              // TODO: switch ascii mode easily
+              // mode switch
+              final event = KEvent(key: LogicalKeyboardKey.digit2, mask: KEvent.modifierControl | KEvent.modifierShift);
+              context.read<InputService>().handleEvent(event, context, context.read<InputConnectionApi>());
             },
           ),
         ),
@@ -151,8 +155,17 @@ class Candidates extends StatelessWidget {
         Expanded(
           flex: 1,
           child: InkWell(
-            child: const Center(
-              child: Icon(Icons.keyboard_arrow_left),
+            child: Center(
+              child: Consumer<KeyboardStatus>(builder: (_, status, __) {
+                return Observer(
+                  builder: (context) {
+                    return Text(
+                      status.preedit ?? '',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    );
+                  },
+                );
+              }),
             ),
             onTap: () {
               final event = KEvent(key: LogicalKeyboardKey.pageUp);
@@ -173,7 +186,12 @@ class Candidates extends StatelessWidget {
                           flex: 1,
                           child: InkWell(
                             child: Center(
-                              child: Text(status.candidates[i]),
+                              child: Text(
+                                status.candidates[i],
+                                style: status.candidates[i].length <= 2
+                                    ? TextStyle(fontSize: Theme.of(context).textTheme.headline6?.fontSize)
+                                    : TextStyle(fontSize: Theme.of(context).textTheme.bodyMedium?.fontSize),
+                              ),
                             ),
                             onTap: () {
                               final event = KEvent.number(i + 1);

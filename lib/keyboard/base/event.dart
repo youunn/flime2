@@ -10,6 +10,7 @@ class KEvent {
   final int? androidCode;
   final int mask; // X11
   int? _androidMask;
+  final bool _androidShiftOn;
   final Command? command;
 
   KEvent({
@@ -17,10 +18,23 @@ class KEvent {
     this.command,
     this.mask = 0,
   })  : code = logicalKeyToX11Map[key],
-        androidCode = (key is SmallLetter) ? logicalKeyToAndroidMap[upperCaseMap[key]] : logicalKeyToAndroidMap[key]
-  // TODO: android replace code of symbol like '!' with '1' and 'shift'
-  // TODO: X shift to the opposite
-  ;
+        androidCode = (() {
+          final LogicalKeyboardKey? realKey;
+
+          if (key is SmallLetter) {
+            realKey = upperCaseMap[key];
+          } else {
+            final checkWithShift = withShiftMap[key];
+            if (checkWithShift != null) {
+              realKey = checkWithShift;
+            } else {
+              realKey = key;
+            }
+          }
+
+          return logicalKeyToAndroidMap[realKey];
+        }()),
+        _androidShiftOn = withShiftMap.containsKey(key);
 
   KEvent.number(
     int index, {
@@ -32,9 +46,14 @@ class KEvent {
           mask: mask,
         );
 
-  int get androidMask => _androidMask ?? (_androidMask = toAndroidMask(mask));
+  int get androidMask {
+    _androidMask ??= getAndroidMask(mask);
+    var result = _androidMask ?? 0;
+    if (_androidShiftOn) result |= RawKeyEventDataAndroid.modifierShift;
+    return result;
+  }
 
-  static int toAndroidMask(int mask) {
+  static int getAndroidMask(int mask) {
     if (mask == 0) return mask;
     var result = 0;
     if (mask & modifierShift != 0) {

@@ -5,8 +5,8 @@ import 'package:flime/keyboard/components/keyboard.dart';
 import 'package:flime/keyboard/router/router.dart';
 import 'package:flutter/material.dart';
 
-class SymbolKeyboardLayout extends StatelessWidget {
-  const SymbolKeyboardLayout({Key? key}) : super(key: key);
+class NumberKeyboardLayout extends StatelessWidget {
+  const NumberKeyboardLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

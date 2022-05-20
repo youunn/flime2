@@ -5,6 +5,7 @@
 typedef struct SimpleContext {
     char* preedit;
     char** candidates;
+    char** comments;
     int count;
 } SimpleContext;
 

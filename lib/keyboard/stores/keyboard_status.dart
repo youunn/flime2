@@ -15,6 +15,9 @@ abstract class AbstractKeyboardStatus with Store {
   List<String> candidates = [];
 
   @observable
+  List<String> comments = [];
+
+  @observable
   String? preedit;
 
   @action
