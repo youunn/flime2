@@ -32,33 +32,44 @@ class MainLayout extends StatelessWidget {
               },
             );
           },
-          child: Column(
-            children: [
-              Consumer<KeyboardStatus>(
-                builder: (_, status, __) {
-                  return Observer(
-                    builder: (context) {
-                      final width = MediaQuery.of(context).size.width;
-                      return ToolbarWrapper(
-                        child: SizedBox(
-                          height: 0.12 * width,
-                          child: status.isComposing ? const Candidates() : const Toolbar(),
+          child: Consumer2<KeyboardStatus, ConstraintStore>(
+            builder: (_, status, constraint, __) {
+              return Builder(
+                builder: (context) {
+                  final orientation = MediaQuery.of(context).orientation;
+                  if (constraint.orientation != orientation) {
+                    constraint.orientation = orientation;
+                  }
+
+                  return Column(
+                    children: [
+                      ToolbarWrapper(
+                        child: Observer(
+                          builder: (context) {
+                            final width = MediaQuery.of(context).size.width;
+                            final orientationFactor =
+                                orientation == Orientation.landscape ? constraint.orientationFactor : 1;
+                            return SizedBox(
+                              height: constraint.toolbarHeightFactor * width * orientationFactor,
+                              child: status.isComposing ? const Candidates() : const Toolbar(),
+                            );
+                          },
                         ),
-                      );
-                    },
+                      ),
+                      Expanded(
+                        child: AutoRouter(
+                          builder: (_, child) {
+                            return KeyboardWrapper(
+                              child: child,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   );
                 },
-              ),
-              Expanded(
-                child: AutoRouter(
-                  builder: (context, child) {
-                    return KeyboardWrapper(
-                      child: child,
-                    );
-                  },
-                ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ],

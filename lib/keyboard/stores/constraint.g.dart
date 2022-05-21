@@ -72,12 +72,63 @@ mixin _$ConstraintStore on AbstractConstraintStore, Store {
     });
   }
 
+  late final _$toolbarHeightFactorAtom = Atom(
+      name: 'AbstractConstraintStore.toolbarHeightFactor', context: context);
+
+  @override
+  double get toolbarHeightFactor {
+    _$toolbarHeightFactorAtom.reportRead();
+    return super.toolbarHeightFactor;
+  }
+
+  @override
+  set toolbarHeightFactor(double value) {
+    _$toolbarHeightFactorAtom.reportWrite(value, super.toolbarHeightFactor, () {
+      super.toolbarHeightFactor = value;
+    });
+  }
+
+  late final _$orientationFactorAtom =
+      Atom(name: 'AbstractConstraintStore.orientationFactor', context: context);
+
+  @override
+  double get orientationFactor {
+    _$orientationFactorAtom.reportRead();
+    return super.orientationFactor;
+  }
+
+  @override
+  set orientationFactor(double value) {
+    _$orientationFactorAtom.reportWrite(value, super.orientationFactor, () {
+      super.orientationFactor = value;
+    });
+  }
+
+  late final _$orientationAtom =
+      Atom(name: 'AbstractConstraintStore.orientation', context: context);
+
+  @override
+  Orientation get orientation {
+    _$orientationAtom.reportRead();
+    return super.orientation;
+  }
+
+  @override
+  set orientation(Orientation value) {
+    _$orientationAtom.reportWrite(value, super.orientation, () {
+      super.orientation = value;
+    });
+  }
+
   @override
   String toString() {
     return '''
 height: ${height},
 dpr: ${dpr},
 toolbarHeight: ${toolbarHeight},
+toolbarHeightFactor: ${toolbarHeightFactor},
+orientationFactor: ${orientationFactor},
+orientation: ${orientation},
 totalHeight: ${totalHeight},
 totalHeightInPx: ${totalHeightInPx}
     ''';

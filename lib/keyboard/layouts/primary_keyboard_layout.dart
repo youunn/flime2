@@ -19,6 +19,7 @@ class PrimaryKeyboardLayout extends StatelessWidget {
     width: 0.1,
     height: 0.15,
     fontSize: 26,
+    orientationFactor: 0.45,
   )
     // 第一行
     ..r(
@@ -107,7 +108,7 @@ class PrimaryKeyboardLayout extends StatelessWidget {
         ..c(
           Lk.period,
           width: 0.14,
-          more: MoreKeysPanel(width: 0.1, height: 0.15, fontSize: 26)
+          more: MoreKeysPanel(width: 0.1, height: 0.15, fontSize: 26, orientationFactor: 0.45)
             ..r(
               (r) => r
                 ..c(Lk.at)

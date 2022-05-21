@@ -1,4 +1,5 @@
 import 'package:flime/api/platform_api.g.dart';
+import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
 part 'constraint.g.dart';
@@ -12,6 +13,13 @@ abstract class AbstractConstraintStore with Store {
   double dpr = 1;
   @observable
   double toolbarHeight = 40;
+
+  @observable
+  double toolbarHeightFactor = 0.12;
+  @observable
+  double orientationFactor = 0.45;
+  @observable
+  Orientation orientation = Orientation.portrait;
 
   final LayoutApi layoutApi;
 

@@ -177,6 +177,7 @@ class Preset extends Iterable<KRow> {
   final double width;
   final double height;
   final double fontSize;
+  final double orientationFactor;
   final rows = <KRow>[];
   var _cached = false;
   late List<List<K>> neighborsOfCells;
@@ -196,6 +197,7 @@ class Preset extends Iterable<KRow> {
     required this.width,
     required this.height,
     required this.fontSize,
+    required this.orientationFactor,
   })  : assert(width >= 0 && width <= 1),
         assert(height >= 0);
 
@@ -234,15 +236,20 @@ class Preset extends Iterable<KRow> {
     );
   }
 
-  Future<K?> detectKey(Offset offset, double screenWidth) async {
+  Future<K?> detectKey(
+    Offset offset,
+    double screenWidth, {
+    Orientation orientation = Orientation.portrait,
+  }) async {
     if (!_cached) await cache();
     final x = offset.dx / screenWidth;
-    final y = offset.dy / screenWidth;
+    final factor = orientation == Orientation.landscape ? orientationFactor : 1;
+    final y = offset.dy / (screenWidth * factor);
 
     var minDistance = double.maxFinite;
     K? resultK;
 
-    for (final k in await getNearestKeys(offset, screenWidth)) {
+    for (final k in await getNearestKeys(offset, screenWidth, orientation: orientation)) {
       if (!k.hitBox.containsPoint(Point(x, y))) {
         continue;
       }
@@ -258,10 +265,15 @@ class Preset extends Iterable<KRow> {
     return resultK;
   }
 
-  Future<List<K>> getNearestKeys(Offset offset, double screenWidth) async {
+  Future<List<K>> getNearestKeys(
+    Offset offset,
+    double screenWidth, {
+    Orientation orientation = Orientation.portrait,
+  }) async {
     if (!_cached) await cache();
     final x = offset.dx / screenWidth;
-    final y = offset.dy / screenWidth;
+    final factor = orientation == Orientation.landscape ? orientationFactor : 1;
+    final y = offset.dy / (screenWidth * factor);
 
     if (x >= 0 && x <= 1 && y >= 0 && y <= totalHeight) {
       final index = y ~/ _cachedCellHeight * _hGridCount + x ~/ _cellWidth;
@@ -323,5 +335,6 @@ class Preset extends Iterable<KRow> {
 }
 
 class MoreKeysPanel extends Preset {
-  MoreKeysPanel({required super.width, required super.height, required super.fontSize});
+  MoreKeysPanel(
+      {required super.width, required super.height, required super.fontSize, required super.orientationFactor});
 }

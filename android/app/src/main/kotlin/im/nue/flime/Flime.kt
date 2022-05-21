@@ -1,7 +1,10 @@
 package im.nue.flime
 
 import android.inputmethodservice.InputMethodService
-import android.view.*
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -17,8 +20,7 @@ class Flime : InputMethodService() {
     private lateinit var engine: FlutterEngine
     private lateinit var flutterView: FlutterView
     private lateinit var binding: KeyboardBinding
-    private var insetsUpdater: InsetsUpdater? = null
-    private var inputServiceApi: Pigeon.InputServiceApi? = null;
+    private var inputServiceApi: Pigeon.InputServiceApi? = null
 
     var inputViewHeight = 0
     val inputView get() = binding.root
@@ -53,7 +55,7 @@ class Flime : InputMethodService() {
             engine.dartExecutor.binaryMessenger,
             InputMethodApi(this),
         )
-        inputServiceApi = Pigeon.InputServiceApi(engine.dartExecutor.binaryMessenger);
+        inputServiceApi = Pigeon.InputServiceApi(engine.dartExecutor.binaryMessenger)
     }
 
     override fun onCreateInputView(): View {
@@ -65,24 +67,6 @@ class Flime : InputMethodService() {
         return inputView
     }
 
-    override fun setInputView(view: View?) {
-        super.setInputView(view)
-        if (view == null) return
-        insetsUpdater = InsetsUpdater(view)
-    }
-
-    override fun onComputeInsets(outInsets: Insets?) {
-        super.onComputeInsets(outInsets)
-
-        // val touchTop = if (showingMoreKeys) 0 else visibleTopY
-        outInsets?.touchableInsets = Insets.TOUCHABLE_INSETS_REGION
-        val outInsetsTop = inputView.height - inputViewHeight
-        outInsets?.touchableRegion?.set(0, outInsetsTop, inputView.width, inputView.height)
-        outInsets?.contentTopInsets = outInsetsTop
-        outInsets?.visibleTopInsets = outInsetsTop
-        insetsUpdater?.setInsets(outInsets)
-    }
-
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(info, restarting)
         updateHeight()
@@ -92,6 +76,23 @@ class Flime : InputMethodService() {
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
         engine.lifecycleChannel.appIsPaused()
+    }
+
+    override fun setInputView(view: View?) {
+        (view?.parent as ViewGroup?)?.removeView(view)
+        super.setInputView(view)
+        if (view == null) return
+    }
+
+    override fun onComputeInsets(outInsets: Insets?) {
+        super.onComputeInsets(outInsets)
+
+        // TODO: val touchTop = if (showingMoreKeys) 0 else visibleTopY
+        outInsets?.touchableInsets = Insets.TOUCHABLE_INSETS_REGION
+        val outInsetsTop = inputView.height - inputViewHeight
+        outInsets?.touchableRegion?.set(0, outInsetsTop, inputView.width, inputView.height)
+        outInsets?.contentTopInsets = outInsetsTop
+        outInsets?.visibleTopInsets = outInsetsTop
     }
 
     override fun onDestroy() {
