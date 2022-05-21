@@ -32,7 +32,7 @@ Future copyAssets() async {
 
     final f = p.substring(p.indexOf(pattern) + pattern.length);
     if (f.contains('/')) {
-      final d = Directory(f.substring(f.lastIndexOf('/') + 1));
+      final d = Directory(join(dataDirectory.path, f.substring(0, f.lastIndexOf('/'))));
       if (!await d.exists()) {
         await d.create(recursive: true);
       }
