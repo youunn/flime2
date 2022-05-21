@@ -1,6 +1,21 @@
 import 'package:flutter/services.dart';
 
 final logicalKeyToAndroidMap = kAndroidToLogicalKey.map((key, value) => MapEntry(value, key));
+
+final specialLogicalKeyAndroidMap = <LogicalKeyboardKey, LogicalKeyboardKey>{
+  LogicalKeyboardKey.quoteSingle: LogicalKeyboardKey.quote,
+  LogicalKeyboardKey.tilde: LogicalKeyboardKey.backquote,
+  LogicalKeyboardKey.quote: LogicalKeyboardKey.quote,
+  LogicalKeyboardKey.backquote: LogicalKeyboardKey.backquote,
+};
+
+final specialLogicalKeyShiftMaskAndroidMap = <LogicalKeyboardKey, bool>{
+  LogicalKeyboardKey.quoteSingle: false,
+  LogicalKeyboardKey.tilde: true,
+  LogicalKeyboardKey.quote: true,
+  LogicalKeyboardKey.backquote: false,
+};
+
 // final logicalKeyToGlfwMap = kGlfwToLogicalKey.map((key, value) => MapEntry(value, key));
 // final logicalKeyToGtkMap = kGtkToLogicalKey.map((key, value) => MapEntry(value, key));
 
@@ -196,6 +211,10 @@ final logicalKeyToX11Map = <LogicalKeyboardKey, int>{
   SmallLetter.keyX: 120,
   SmallLetter.keyY: 121,
   SmallLetter.keyZ: 122,
+
+  // other
+  LogicalKeyboardKey.quoteSingle: 0x27,
+  LogicalKeyboardKey.tilde: 0x7e,
 
   // shift
   LogicalKeyboardKey.backquote: 0x60,

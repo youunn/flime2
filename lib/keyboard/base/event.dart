@@ -19,22 +19,22 @@ class KEvent {
     this.mask = 0,
   })  : code = logicalKeyToX11Map[key],
         androidCode = (() {
-          final LogicalKeyboardKey? realKey;
+          LogicalKeyboardKey? realKey;
 
           if (key is SmallLetter) {
             realKey = upperCaseMap[key];
-          } else {
-            final checkWithShift = withShiftMap[key];
-            if (checkWithShift != null) {
-              realKey = checkWithShift;
-            } else {
-              realKey = key;
-            }
+            return logicalKeyToAndroidMap[realKey];
           }
 
-          return logicalKeyToAndroidMap[realKey];
+          realKey = specialLogicalKeyAndroidMap[key];
+          if (realKey != null) return logicalKeyToAndroidMap[realKey];
+
+          realKey = withShiftMap[key];
+          if (realKey != null) return logicalKeyToAndroidMap[realKey];
+
+          return logicalKeyToAndroidMap[key];
         }()),
-        _androidShiftOn = withShiftMap.containsKey(key);
+        _androidShiftOn = specialLogicalKeyShiftMaskAndroidMap[key] ?? withShiftMap.containsKey(key);
 
   KEvent.number(
     int index, {
