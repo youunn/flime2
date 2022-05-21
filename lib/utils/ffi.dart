@@ -20,9 +20,12 @@ extension StringPointerCast on Pointer<Pointer<Char>> {
     if (this == nullptr) return;
     for (var i = 0; i < count; i++) {
       final p = this[i];
-      if (p == nullptr) yield null;
-      final s = p.toDartString();
-      yield s;
+      if (p == nullptr) {
+        yield null;
+      } else {
+        final s = p.toDartString();
+        yield s;
+      }
       // free in native library
     }
   }
