@@ -89,7 +89,10 @@ class Toolbar extends StatelessWidget {
             child: const Center(
               child: Icon(Icons.keyboard_arrow_left),
             ),
-            onTap: () {},
+            onTap: () {
+              final event = KEvent(key: LogicalKeyboardKey.goBack);
+              context.read<InputService>().handleEvent(event, context);
+            },
           ),
         ),
         Expanded(
@@ -106,24 +109,32 @@ class Toolbar extends StatelessWidget {
         Expanded(
           child: InkWell(
             child: const Center(
-              child: Icon(Icons.edit),
+              child: Icon(Icons.translate),
             ),
             onTap: () {
               // schema options
               final event = KEvent(key: LogicalKeyboardKey.backquote, mask: KEvent.modifierControl);
-              context.read<InputService>().handleEvent(event, context, context.read<InputConnectionApi>());
+              context.read<InputService>().handleEvent(event, context);
             },
           ),
         ),
         Expanded(
           child: InkWell(
-            child: const Center(
-              child: Icon(Icons.translate),
+            child: Center(
+              child: Consumer<KeyboardStatus>(
+                builder: (_, status, __) {
+                  return Observer(
+                    builder: (_) {
+                      return Icon(status.isAsciiMode ? Icons.language : Icons.edit);
+                    },
+                  );
+                },
+              ),
             ),
             onTap: () {
               // mode switch
               final event = KEvent(key: LogicalKeyboardKey.digit2, mask: KEvent.modifierControl | KEvent.modifierShift);
-              context.read<InputService>().handleEvent(event, context, context.read<InputConnectionApi>());
+              context.read<InputService>().handleEvent(event, context);
             },
           ),
         ),
@@ -135,7 +146,7 @@ class Toolbar extends StatelessWidget {
             onTap: () {
               // left
               final event = KEvent(key: LogicalKeyboardKey.arrowLeft);
-              context.read<InputService>().handleEvent(event, context, context.read<InputConnectionApi>());
+              context.read<InputService>().handleEvent(event, context);
             },
           ),
         ),
@@ -147,7 +158,7 @@ class Toolbar extends StatelessWidget {
             onTap: () {
               // right
               final event = KEvent(key: LogicalKeyboardKey.arrowRight);
-              context.read<InputService>().handleEvent(event, context, context.read<InputConnectionApi>());
+              context.read<InputService>().handleEvent(event, context);
             },
           ),
         ),
@@ -156,7 +167,9 @@ class Toolbar extends StatelessWidget {
             child: const Center(
               child: Icon(Icons.mic),
             ),
-            onTap: () {},
+            onTap: () {
+              context.read<LayoutApi>().toggleFullScreen();
+            },
           ),
         ),
       ],
@@ -175,20 +188,22 @@ class Candidates extends StatelessWidget {
           flex: 1,
           child: InkWell(
             child: Center(
-              child: Consumer<KeyboardStatus>(builder: (_, status, __) {
-                return Observer(
-                  builder: (context) {
-                    return Text(
-                      status.preedit ?? '',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    );
-                  },
-                );
-              }),
+              child: Consumer<KeyboardStatus>(
+                builder: (_, status, __) {
+                  return Observer(
+                    builder: (context) {
+                      return Text(
+                        status.preedit ?? '',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      );
+                    },
+                  );
+                },
+              ),
             ),
             onTap: () {
               final event = KEvent(key: LogicalKeyboardKey.pageUp);
-              context.read<InputService>().handleEvent(event, context, context.read<InputConnectionApi>());
+              context.read<InputService>().handleEvent(event, context);
             },
           ),
         ),
@@ -225,9 +240,7 @@ class Candidates extends StatelessWidget {
                             ),
                             onTap: () {
                               final event = KEvent.number(i + 1);
-                              context
-                                  .read<InputService>()
-                                  .handleEvent(event, context, context.read<InputConnectionApi>());
+                              context.read<InputService>().handleEvent(event, context);
                             },
                           ),
                         ),
@@ -246,7 +259,7 @@ class Candidates extends StatelessWidget {
             ),
             onTap: () {
               final event = KEvent(key: LogicalKeyboardKey.pageDown);
-              context.read<InputService>().handleEvent(event, context, context.read<InputConnectionApi>());
+              context.read<InputService>().handleEvent(event, context);
             },
           ),
         ),

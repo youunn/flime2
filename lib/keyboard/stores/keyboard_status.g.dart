@@ -41,6 +41,54 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
     });
   }
 
+  late final _$isAsciiModeAtom =
+      Atom(name: 'AbstractKeyboardStatus.isAsciiMode', context: context);
+
+  @override
+  bool get isAsciiMode {
+    _$isAsciiModeAtom.reportRead();
+    return super.isAsciiMode;
+  }
+
+  @override
+  set isAsciiMode(bool value) {
+    _$isAsciiModeAtom.reportWrite(value, super.isAsciiMode, () {
+      super.isAsciiMode = value;
+    });
+  }
+
+  late final _$schemaIdAtom =
+      Atom(name: 'AbstractKeyboardStatus.schemaId', context: context);
+
+  @override
+  String? get schemaId {
+    _$schemaIdAtom.reportRead();
+    return super.schemaId;
+  }
+
+  @override
+  set schemaId(String? value) {
+    _$schemaIdAtom.reportWrite(value, super.schemaId, () {
+      super.schemaId = value;
+    });
+  }
+
+  late final _$schemaNameAtom =
+      Atom(name: 'AbstractKeyboardStatus.schemaName', context: context);
+
+  @override
+  String? get schemaName {
+    _$schemaNameAtom.reportRead();
+    return super.schemaName;
+  }
+
+  @override
+  set schemaName(String? value) {
+    _$schemaNameAtom.reportWrite(value, super.schemaName, () {
+      super.schemaName = value;
+    });
+  }
+
   late final _$candidatesAtom =
       Atom(name: 'AbstractKeyboardStatus.candidates', context: context);
 
@@ -70,6 +118,22 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
   set comments(List<String?> value) {
     _$commentsAtom.reportWrite(value, super.comments, () {
       super.comments = value;
+    });
+  }
+
+  late final _$shiftLockAtom =
+      Atom(name: 'AbstractKeyboardStatus.shiftLock', context: context);
+
+  @override
+  bool? get shiftLock {
+    _$shiftLockAtom.reportRead();
+    return super.shiftLock;
+  }
+
+  @override
+  set shiftLock(bool? value) {
+    _$shiftLockAtom.reportWrite(value, super.shiftLock, () {
+      super.shiftLock = value;
     });
   }
 
@@ -119,8 +183,12 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
     return '''
 modifierState: ${modifierState},
 isComposing: ${isComposing},
+isAsciiMode: ${isAsciiMode},
+schemaId: ${schemaId},
+schemaName: ${schemaName},
 candidates: ${candidates},
 comments: ${comments},
+shiftLock: ${shiftLock},
 preedit: ${preedit}
     ''';
   }

@@ -369,3 +369,8 @@ const numberToLogicalKeyMap = <int, LogicalKeyboardKey>{
   8: LogicalKeyboardKey.digit8,
   9: LogicalKeyboardKey.digit9,
 };
+
+const upperACode = 65;
+const lowerACode = 97;
+const lowerZCode = 122;
+const caseDiff = lowerACode - upperACode;

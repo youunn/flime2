@@ -54,13 +54,26 @@ class PrimaryKeyboardLayout extends StatelessWidget {
     ..r(
       (r) => r
         ..k(
-            click: KEvent(
-              command: (_, status) {
-                status.setModifier(KEvent.modifierShift, state: !status.hasModifier(KEvent.modifierShift));
-              },
-            ),
-            label: 'Shift',
-            width: 0.15)
+          click: KEvent(
+            command: (_, status) {
+              if (status.shiftLock == true) {
+                status
+                  ..setModifier(KEvent.modifierShift, state: false)
+                  ..shiftLock = null;
+              } else if (status.shiftLock == false) {
+                status.shiftLock = true;
+              } else {
+                status
+                  ..setModifier(KEvent.modifierShift, state: true)
+                  ..shiftLock = false;
+              }
+            },
+          ),
+          label: 'Shift',
+          width: 0.15,
+          functional: true,
+          highlight: Highlight.shift,
+        )
         ..k(
           click: KEvent(key: Sl.keyZ),
           label: 'z',
@@ -88,7 +101,7 @@ class PrimaryKeyboardLayout extends StatelessWidget {
         ..c(Sl.keyB, longClick: Lk.backslash)
         ..c(Sl.keyN, longClick: Lk.question)
         ..c(Sl.keyM, longClick: Lk.slash)
-        ..c(Lk.backspace, label: 'Back', repeatable: true, width: 0.15),
+        ..c(Lk.backspace, icon: Icons.backspace_outlined, repeatable: true, width: 0.15),
     )
     // 第四行
     ..r(
@@ -100,11 +113,14 @@ class PrimaryKeyboardLayout extends StatelessWidget {
               context.router.replace(const NumberKeyboardRoute());
             },
           ),
-          label: '123',
+          label: '',
+          icon: Icons.onetwothree,
           width: 0.18,
+          functional: true,
+          highlight: Highlight.symbol,
         )
-        ..c(Lk.comma, width: 0.18)
-        ..c(Lk.space, label: '', repeatable: true, width: 0.34)
+        ..c(Lk.comma, width: 0.18, composing: KEvent(key: Lk.semicolon))
+        ..c(Lk.space, label: '', repeatable: true, width: 0.34, functional: true, highlight: Highlight.symbol)
         ..c(
           Lk.period,
           width: 0.14,
@@ -133,8 +149,9 @@ class PrimaryKeyboardLayout extends StatelessWidget {
                 ..c(Lk.braceRight)
                 ..c(Lk.bar),
             ),
+          composing: KEvent(key: Lk.quoteSingle),
         )
-        ..c(Lk.enter, label: 'Enter', width: 0.16),
+        ..c(Lk.enter, label: 'Enter', highlight: Highlight.enter, functional: true, width: 0.16),
       height: 0.18,
     )
     // 初始化

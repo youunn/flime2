@@ -40,8 +40,8 @@ class KeyboardView extends StatelessWidget {
               create: (_) => KeyboardStatus(),
               lazy: false,
             ),
-            ProxyProvider<KeyboardStatus, InputService>(
-              update: (_, status, __) => RimeService(status)..init(),
+            ProxyProvider2<KeyboardStatus, InputConnectionApi, InputService>(
+              update: (_, status, inputConnectionApi, __) => RimeService(status, inputConnectionApi)..init(),
               lazy: false,
             ),
             ProxyProvider<LayoutApi, ConstraintStore>(

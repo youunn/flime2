@@ -88,6 +88,40 @@ class RimeBridge {
   late final _free_string =
       _free_stringPtr.asFunction<void Function(ffi.Pointer<ffi.Char>)>();
 
+  ffi.Pointer<SimpleStatus> get_status() {
+    return _get_status();
+  }
+
+  late final _get_statusPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<SimpleStatus> Function()>>(
+          'get_status');
+  late final _get_status =
+      _get_statusPtr.asFunction<ffi.Pointer<SimpleStatus> Function()>();
+
+  void free_status(
+    ffi.Pointer<SimpleStatus> status,
+  ) {
+    return _free_status(
+      status,
+    );
+  }
+
+  late final _free_statusPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<SimpleStatus>)>>(
+          'free_status');
+  late final _free_status =
+      _free_statusPtr.asFunction<void Function(ffi.Pointer<SimpleStatus>)>();
+
+  ffi.Pointer<SimpleContext> get_context() {
+    return _get_context();
+  }
+
+  late final _get_contextPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<SimpleContext> Function()>>(
+          'get_context');
+  late final _get_context =
+      _get_contextPtr.asFunction<ffi.Pointer<SimpleContext> Function()>();
+
   void free_context(
     ffi.Pointer<SimpleContext> context,
   ) {
@@ -101,24 +135,18 @@ class RimeBridge {
       'free_context');
   late final _free_context =
       _free_contextPtr.asFunction<void Function(ffi.Pointer<SimpleContext>)>();
+}
 
-  int is_composing() {
-    return _is_composing();
-  }
+class SimpleStatus extends ffi.Struct {
+  external ffi.Pointer<ffi.Char> schema_id;
 
-  late final _is_composingPtr =
-      _lookup<ffi.NativeFunction<ffi.Int Function()>>('is_composing');
-  late final _is_composing = _is_composingPtr.asFunction<int Function()>();
+  external ffi.Pointer<ffi.Char> schema_name;
 
-  ffi.Pointer<SimpleContext> get_context() {
-    return _get_context();
-  }
+  @ffi.Int()
+  external int is_composing;
 
-  late final _get_contextPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<SimpleContext> Function()>>(
-          'get_context');
-  late final _get_context =
-      _get_contextPtr.asFunction<ffi.Pointer<SimpleContext> Function()>();
+  @ffi.Int()
+  external int is_ascii_mode;
 }
 
 class SimpleContext extends ffi.Struct {

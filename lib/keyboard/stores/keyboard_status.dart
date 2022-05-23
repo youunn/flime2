@@ -12,13 +12,28 @@ abstract class AbstractKeyboardStatus with Store {
   bool isComposing = false;
 
   @observable
+  bool isAsciiMode = false;
+
+  @observable
+  String? schemaId;
+
+  @observable
+  String? schemaName;
+
+  @observable
   List<String?> candidates = [];
 
   @observable
   List<String?> comments = [];
 
   @observable
+  bool? shiftLock;
+
+  @observable
   String? preedit;
+
+  @observable
+  int editorAction = 0;
 
   @action
   bool setModifier(int mask, {required bool state}) {

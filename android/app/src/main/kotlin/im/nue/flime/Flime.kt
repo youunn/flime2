@@ -1,5 +1,6 @@
 package im.nue.flime
 
+import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.view.Gravity
 import android.view.View
@@ -20,9 +21,11 @@ class Flime : InputMethodService() {
     private lateinit var engine: FlutterEngine
     private lateinit var flutterView: FlutterView
     private lateinit var binding: KeyboardBinding
+    private var inputConnectionApi: InputConnectionApi? = null
     private var inputServiceApi: Pigeon.InputServiceApi? = null
 
     var inputViewHeight = 0
+    var fullScreenMode = false
     val inputView get() = binding.root
 
     companion object {
@@ -47,15 +50,25 @@ class Flime : InputMethodService() {
             engine.dartExecutor.binaryMessenger,
             LayoutApi(this),
         )
+        inputConnectionApi = InputConnectionApi(this)
         Pigeon.InputConnectionApi.setup(
             engine.dartExecutor.binaryMessenger,
-            InputConnectionApi(this),
+            inputConnectionApi,
         )
         Pigeon.InputMethodApi.setup(
             engine.dartExecutor.binaryMessenger,
             InputMethodApi(this),
         )
         inputServiceApi = Pigeon.InputServiceApi(engine.dartExecutor.binaryMessenger)
+    }
+
+    override fun onEvaluateFullscreenMode(): Boolean {
+        val config = resources.configuration
+        if (config.orientation != Configuration.ORIENTATION_LANDSCAPE) {
+            return false
+        }
+        return if (fullScreenMode) true
+        else super.onEvaluateFullscreenMode()
     }
 
     override fun onCreateInputView(): View {
@@ -71,6 +84,8 @@ class Flime : InputMethodService() {
         super.onStartInputView(info, restarting)
         updateHeight()
         engine.lifecycleChannel.appIsResumed()
+        inputConnectionApi?.setActionId((info?.imeOptions ?: 0) and EditorInfo.IME_MASK_ACTION)
+        inputServiceApi?.startInputView { }
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {

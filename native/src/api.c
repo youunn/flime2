@@ -1,7 +1,9 @@
 #include "api.h"
 
 #ifdef __ANDROID_API__
+
 #    include <android/log.h>
+
 #endif
 
 #include <rime_api.h>
@@ -26,7 +28,7 @@
 #endif
 
 static RimeSessionId session_id;
-static RimeApi* rime;
+static RimeApi *rime;
 
 // int get_modifier(const char* name) { return get_modifier_by_name(name); }
 //
@@ -38,13 +40,13 @@ int init() {
     return rime != NULL;
 }
 
-static void on_message(void* context, RimeSessionId id, const char* type, const char* value) {
-    char* message;
+static void on_message(void *context, RimeSessionId id, const char *type, const char *value) {
+    char *message;
     asprintf(&message, "message: [%s] %s", type, value);
     LOG_INFO("%s", message);
 }
 
-int start(const char* dir) {
+int start(const char *dir) {
     RIME_STRUCT(RimeTraits, traits);
     traits.shared_data_dir = dir;
     traits.user_data_dir = dir;
@@ -67,10 +69,10 @@ int process_key(int code, int mask) {
     return result;
 }
 
-char* get_commit() {
+char *get_commit() {
     RIME_STRUCT(RimeCommit, commit);
     if (!rime->get_commit(session_id, &commit)) return NULL;
-    char* result = strdup(commit.text);
+    char *result = strdup(commit.text);
     RimeFreeCommit(&commit);
     return result;
 }
@@ -83,28 +85,28 @@ int finalize() {
     return 0;
 }
 
-void free_string(char* string) { free(string); }
+void free_string(char *string) { free(string); }
 
-void free_context(SimpleContext* context) {
-    for (int i = 0; i < context->count; i++) {
-        free(context->candidates[i]);
-        free(context->comments[i]);
-    }
-    free(context->candidates);
-    free(context->comments);
-    free(context->preedit);
-    free(context);
-}
-
-int is_composing() {
+SimpleStatus *get_status() {
     RIME_STRUCT(RimeStatus, status);
     if (!rime->get_status(session_id, &status)) return false;
-    int result = status.is_composing;
+    SimpleStatus *result = malloc(sizeof(SimpleStatus));
+    result->schema_id = strdup(status.schema_id);
+    result->schema_name = strdup(status.schema_name);
+    result->is_composing = status.is_composing;
+    result->is_ascii_mode = status.is_ascii_mode;
     rime->free_status(&status);
     return result;
 }
 
-SimpleContext* get_context() {
+void free_status(SimpleStatus *status) {
+    if (status == NULL) return;
+    free(status->schema_id);
+    free(status->schema_name);
+    free(status);
+}
+
+SimpleContext *get_context() {
     RIME_STRUCT(RimeContext, context);
     if (!rime->get_context(session_id, &context)) return NULL;
     int count = context.menu.num_candidates;
@@ -113,17 +115,17 @@ SimpleContext* get_context() {
         return NULL;
     }
 
-    char* preedit;
+    char *preedit;
     if (!context.composition.preedit)
         preedit = NULL;
     else
         preedit = strdup(context.composition.preedit);
 
-    char** candidates = malloc(count * sizeof(char*));
-    char** comments = malloc(count * sizeof(char*));
+    char **candidates = malloc(count * sizeof(char *));
+    char **comments = malloc(count * sizeof(char *));
 
     for (int i = 0; i < count; i++) {
-        RimeCandidate* rime_candidates = &context.menu.candidates[i];
+        RimeCandidate *rime_candidates = &context.menu.candidates[i];
         if (!rime_candidates) {
             candidates[i] = NULL;
             comments[i] = NULL;
@@ -140,7 +142,7 @@ SimpleContext* get_context() {
         }
     }
 
-    SimpleContext* result = malloc(sizeof(SimpleContext));
+    SimpleContext *result = malloc(sizeof(SimpleContext));
     result->preedit = preedit;
     result->candidates = candidates;
     result->comments = comments;
@@ -149,4 +151,16 @@ SimpleContext* get_context() {
     rime->free_context(&context);
 
     return result;
+}
+
+void free_context(SimpleContext *context) {
+    if (context == NULL) return;
+    for (int i = 0; i < context->count; i++) {
+        free(context->candidates[i]);
+        free(context->comments[i]);
+    }
+    free(context->candidates);
+    free(context->comments);
+    free(context->preedit);
+    free(context);
 }

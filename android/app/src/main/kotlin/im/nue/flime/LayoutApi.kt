@@ -7,4 +7,10 @@ class LayoutApi(private val flime: Flime) : Pigeon.LayoutApi {
             flime.inputView.requestLayout()
         }
     }
+
+    override fun toggleFullScreen() {
+        flime.fullScreenMode = !flime.fullScreenMode;
+        flime.updateFullscreenMode()
+        flime.requestHideSelf(0)
+    }
 }

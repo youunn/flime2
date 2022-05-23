@@ -3,6 +3,8 @@ import 'package:pigeon/pigeon.dart';
 @HostApi()
 abstract class LayoutApi {
   void updateHeight(int height);
+
+  void toggleFullScreen();
 }
 
 @HostApi()
@@ -20,10 +22,13 @@ abstract class InputConnectionApi {
 
   void performEnter();
 
-  int getEditorInfo();
+  void handleBack();
+
+  int getActionId();
 }
 
 @FlutterApi()
 abstract class InputServiceApi {
+  void startInputView();
   void finalize();
 }

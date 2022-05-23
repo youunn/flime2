@@ -29,6 +29,7 @@ public class Pigeon {
   /** Generated interface from Pigeon that represents a handler of messages from Flutter.*/
   public interface LayoutApi {
     void updateHeight(@NonNull Long height);
+    void toggleFullScreen();
 
     /** The codec used by LayoutApi. */
     static MessageCodec<Object> getCodec() {
@@ -50,6 +51,25 @@ public class Pigeon {
                 throw new NullPointerException("heightArg unexpectedly null.");
               }
               api.updateHeight((heightArg == null) ? null : heightArg.longValue());
+              wrapped.put("result", null);
+            }
+            catch (Error | RuntimeException exception) {
+              wrapped.put("error", wrapError(exception));
+            }
+            reply.reply(wrapped);
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.LayoutApi.toggleFullScreen", getCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            Map<String, Object> wrapped = new HashMap<>();
+            try {
+              api.toggleFullScreen();
               wrapped.put("result", null);
             }
             catch (Error | RuntimeException exception) {
@@ -130,7 +150,8 @@ public class Pigeon {
     void commit(@NonNull String text);
     void send(@NonNull Long code, @NonNull Long mask);
     void performEnter();
-    @NonNull Long getEditorInfo();
+    void handleBack();
+    @NonNull Long getActionId();
 
     /** The codec used by InputConnectionApi. */
     static MessageCodec<Object> getCodec() {
@@ -212,12 +233,31 @@ public class Pigeon {
       }
       {
         BasicMessageChannel<Object> channel =
-            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.InputConnectionApi.getEditorInfo", getCodec());
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.InputConnectionApi.handleBack", getCodec());
         if (api != null) {
           channel.setMessageHandler((message, reply) -> {
             Map<String, Object> wrapped = new HashMap<>();
             try {
-              Long output = api.getEditorInfo();
+              api.handleBack();
+              wrapped.put("result", null);
+            }
+            catch (Error | RuntimeException exception) {
+              wrapped.put("error", wrapError(exception));
+            }
+            reply.reply(wrapped);
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.InputConnectionApi.getActionId", getCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            Map<String, Object> wrapped = new HashMap<>();
+            try {
+              Long output = api.getActionId();
               wrapped.put("result", output);
             }
             catch (Error | RuntimeException exception) {
@@ -249,6 +289,13 @@ public class Pigeon {
       return InputServiceApiCodec.INSTANCE;
     }
 
+    public void startInputView(Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.InputServiceApi.startInputView", getCodec());
+      channel.send(null, channelReply -> {
+        callback.reply(null);
+      });
+    }
     public void finalize(Reply<Void> callback) {
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.InputServiceApi.finalize", getCodec());

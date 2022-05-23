@@ -11,10 +11,11 @@ class KEvent {
   final int mask; // X11
   int? _androidMask;
   final bool _androidShiftOn;
+  final LogicalKeyboardKey? key;
   final Command? command;
 
   KEvent({
-    LogicalKeyboardKey? key,
+    this.key,
     this.command,
     this.mask = 0,
   })  : code = logicalKeyToX11Map[key],
@@ -75,6 +76,8 @@ class KEvent {
   static const modifierControl = GtkKeyHelper.modifierControl;
   static const modifierAlt = GtkKeyHelper.modifierMod1;
   static const modifierMeta = GtkKeyHelper.modifierMeta;
+
+  // TODO: const events and commands
 }
 
 typedef Lk = LogicalKeyboardKey;

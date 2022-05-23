@@ -15,7 +15,12 @@ class K {
   final String? longClickLabel;
   final bool repeatable;
   final MoreKeysPanel? more;
+  final KEvent? composing;
+  final String? composingLabel;
   late final Rectangle<double>? moreKeysPanelBox;
+  final IconData? icon;
+  final bool functional;
+  final Highlight? highlight;
 
   static const emptyHitBox = Rectangle<double>(0, 0, 0, 0);
 
@@ -28,6 +33,11 @@ class K {
     this.longClickLabel,
     this.repeatable = false,
     this.more,
+    this.composing,
+    this.composingLabel,
+    this.icon,
+    this.functional = false,
+    this.highlight,
   }) {
     if (more == null) {
       moreKeysPanelBox = null;
@@ -49,15 +59,13 @@ class K {
     }
   }
 
-  K.dummy(this.preset)
-      : label = '',
-        click = KEvent(),
-        longClick = null,
-        longClickLabel = null,
-        repeatable = false,
-        more = null,
-        moreKeysPanelBox = null,
-        hitBox = emptyHitBox;
+  K.dummy(Preset preset)
+      : this(
+          preset: preset,
+          hitBox: emptyHitBox,
+          label: '',
+          click: KEvent(),
+        );
 
   double getSquaredDistance(double x, double y) {
     final double dx;
@@ -107,6 +115,11 @@ class KRow extends Iterable<K> {
     double? width,
     double? height,
     MoreKeysPanel? more,
+    KEvent? composing,
+    String? composingLabel,
+    IconData? icon,
+    bool functional = false,
+    Highlight? highlight,
   }) {
     final x = keys.isNotEmpty ? keys.last.hitBox.right : 0.0;
     final w = width ?? preset.width;
@@ -122,6 +135,11 @@ class KRow extends Iterable<K> {
       repeatable: repeatable,
       hitBox: hitBox,
       more: more,
+      composing: composing,
+      composingLabel: composingLabel,
+      icon: icon,
+      functional: functional,
+      highlight: highlight,
     );
     keys.add(key);
   }
@@ -136,6 +154,11 @@ class KRow extends Iterable<K> {
     double? width,
     double? height,
     MoreKeysPanel? more,
+    KEvent? composing,
+    String? composingLabel,
+    IconData? icon,
+    bool functional = false,
+    Highlight? highlight,
   }) {
     k(
       click: KEvent(key: logicalKey),
@@ -146,6 +169,11 @@ class KRow extends Iterable<K> {
       width: width,
       height: height,
       more: more,
+      composing: composing,
+      composingLabel: composingLabel,
+      icon: icon,
+      functional: functional,
+      highlight: highlight,
     );
   }
 
@@ -159,6 +187,11 @@ class KRow extends Iterable<K> {
     double? width,
     double? height,
     MoreKeysPanel? more,
+    KEvent? composing,
+    String? composingLabel,
+    IconData? icon,
+    bool functional = false,
+    Highlight? highlight,
   }) {
     k(
       click: KEvent(key: logicalKey, mask: KEvent.modifierShift),
@@ -169,6 +202,11 @@ class KRow extends Iterable<K> {
       width: width,
       height: height,
       more: more,
+      composing: composing,
+      composingLabel: composingLabel,
+      icon: icon,
+      functional: functional,
+      highlight: highlight,
     );
   }
 }
@@ -337,4 +375,10 @@ class Preset extends Iterable<KRow> {
 class MoreKeysPanel extends Preset {
   MoreKeysPanel(
       {required super.width, required super.height, required super.fontSize, required super.orientationFactor});
+}
+
+enum Highlight {
+  shift,
+  enter,
+  symbol,
 }

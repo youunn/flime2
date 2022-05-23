@@ -4,6 +4,7 @@ import 'package:flime/api/platform_api.g.dart';
 import 'package:flime/keyboard/base/preset.dart';
 import 'package:flime/keyboard/services/input_service.dart';
 import 'package:flime/keyboard/stores/constraint.dart';
+import 'package:flime/keyboard/stores/keyboard_status.dart';
 import 'package:flime/keyboard/stores/settings.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -35,8 +36,8 @@ class _MainKeyboardState extends State<MainKeyboard> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    return Consumer4<SettingsStore, ConstraintStore, InputService, InputConnectionApi>(
-      builder: (_, settings, constraint, inputService, inputConnectionApi, child) {
+    return Consumer4<SettingsStore, ConstraintStore, KeyboardStatus, InputService>(
+      builder: (_, settings, constraint, status, inputService, child) {
         // 有点偷懒
         return Observer(
           builder: (context) {
@@ -53,7 +54,8 @@ class _MainKeyboardState extends State<MainKeyboard> {
                     instance.onTapUp = (_) async {
                       final k = _currentK;
                       if (k != _dummy) {
-                        await inputService.handleEvent(k.click, context, inputConnectionApi);
+                        final event = status.isComposing ? k.composing ?? k.click : k.click;
+                        await inputService.handleEvent(event, context);
                         setState(() {
                           _currentK = _dummy;
                         });
@@ -85,7 +87,8 @@ class _MainKeyboardState extends State<MainKeyboard> {
                         final k = _currentK;
                         if (k.repeatable) {
                           while (_longPressed) {
-                            await inputService.handleEvent(k.click, context, inputConnectionApi);
+                            final event = status.isComposing ? k.composing ?? k.click : k.click;
+                            await inputService.handleEvent(event, context);
                             await Future.delayed(settings.repeatInterval);
                           }
                         }
@@ -99,7 +102,8 @@ class _MainKeyboardState extends State<MainKeyboard> {
                           if (k.repeatable) {
                             // ignore
                           } else if (more == null || moreBox == null) {
-                            await inputService.handleEvent(k.longClick ?? k.click, context, inputConnectionApi);
+                            final event = k.longClick ?? (status.isComposing ? k.composing ?? k.click : k.click);
+                            await inputService.handleEvent(event, context);
                           } else {
                             // TODO: extract method or use detectKey
                             var minDistance = double.maxFinite;
@@ -120,7 +124,8 @@ class _MainKeyboardState extends State<MainKeyboard> {
                             }
 
                             if (selected != null) {
-                              await inputService.handleEvent(selected.click, context, inputConnectionApi);
+                              final event = status.isComposing ? selected.composing ?? selected.click : selected.click;
+                              await inputService.handleEvent(event, context);
                             }
                           }
 
@@ -161,21 +166,114 @@ class _MainKeyboardState extends State<MainKeyboard> {
                           child: Row(
                             children: [
                               for (final k in r)
-                                SizedBox(
-                                  height: k.hitBox.height *
-                                      screenWidth *
-                                      (constraint.orientation == Orientation.landscape
-                                          ? preset.orientationFactor
-                                          : 1),
-                                  width: k.hitBox.width * screenWidth,
-                                  child: Center(
-                                    child: Text(
-                                      // TODO: different label for different editor info of enter key
-                                      k.label,
-                                      style: TextStyle(fontSize: preset.fontSize),
+                                if (k.highlight == Highlight.enter)
+                                  SizedBox(
+                                    height: k.hitBox.height *
+                                        screenWidth *
+                                        (constraint.orientation == Orientation.landscape
+                                            ? preset.orientationFactor
+                                            : 1),
+                                    width: k.hitBox.width * screenWidth,
+                                    child: Center(
+                                      child: Builder(
+                                        builder: (_) {
+                                          const imeActionNone = 1;
+                                          const imeActionGo = 2;
+                                          const imeActionSearch = 3;
+                                          const imeActionSend = 4;
+                                          const imeActionNext = 5;
+                                          const imeActionDone = 6;
+                                          const imeActionPrevious = 7;
+                                          IconData iconData;
+                                          if (status.editorAction == imeActionNone) {
+                                            iconData = Icons.keyboard_return;
+                                          } else if (status.editorAction == imeActionGo) {
+                                            iconData = Icons.arrow_right_alt;
+                                          } else if (status.editorAction == imeActionSearch) {
+                                            iconData = Icons.search;
+                                          } else if (status.editorAction == imeActionSend) {
+                                            iconData = Icons.send;
+                                          } else if (status.editorAction == imeActionNext) {
+                                            iconData = Icons.chevron_right;
+                                          } else if (status.editorAction == imeActionDone) {
+                                            iconData = Icons.done;
+                                          } else if (status.editorAction == imeActionPrevious) {
+                                            iconData = Icons.chevron_left;
+                                          } else {
+                                            iconData = Icons.keyboard_return;
+                                          }
+                                          return Icon(iconData);
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                else if (k.highlight == Highlight.shift)
+                                  SizedBox(
+                                    height: k.hitBox.height *
+                                        screenWidth *
+                                        (constraint.orientation == Orientation.landscape
+                                            ? preset.orientationFactor
+                                            : 1),
+                                    width: k.hitBox.width * screenWidth,
+                                    child: Center(
+                                      child: Observer(
+                                        builder: (context) {
+                                          return Icon(
+                                            status.shiftLock == null
+                                                ? Icons.keyboard_arrow_up
+                                                : status.shiftLock == false
+                                                    ? Icons.keyboard_capslock
+                                                    : Icons.keyboard_double_arrow_up,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                else if (k.highlight == Highlight.symbol)
+                                  SizedBox(
+                                    height: k.hitBox.height *
+                                        screenWidth *
+                                        (constraint.orientation == Orientation.landscape
+                                            ? preset.orientationFactor
+                                            : 1),
+                                    width: k.hitBox.width * screenWidth,
+                                    child: Center(
+                                      child: k.icon != null
+                                          ? Icon(k.icon)
+                                          : Text(
+                                              k.label,
+                                              style: TextStyle(fontSize: preset.fontSize),
+                                            ),
+                                    ),
+                                  )
+                                else
+                                  SizedBox(
+                                    height: k.hitBox.height *
+                                        screenWidth *
+                                        (constraint.orientation == Orientation.landscape
+                                            ? preset.orientationFactor
+                                            : 1),
+                                    width: k.hitBox.width * screenWidth,
+                                    child: Center(
+                                      child: k.composing == null
+                                          ? k.icon != null
+                                              ? Icon(k.icon)
+                                              : Text(
+                                                  k.label,
+                                                  style: TextStyle(fontSize: preset.fontSize),
+                                                )
+                                          : Observer(
+                                              builder: (context) {
+                                                return k.icon != null
+                                                    ? Icon(k.icon)
+                                                    : Text(
+                                                        status.isComposing ? k.composingLabel ?? k.label : k.label,
+                                                        style: TextStyle(fontSize: preset.fontSize),
+                                                      );
+                                              },
+                                            ),
                                     ),
                                   ),
-                                ),
                             ],
                           ),
                         ),
@@ -184,6 +282,7 @@ class _MainKeyboardState extends State<MainKeyboard> {
                   // TODO: style
                   if (_currentK != _dummy)
                     if (_currentK.more == null || !_longPressed)
+                      // preview
                       Positioned(
                         left: _currentK.hitBox.left * screenWidth,
                         top: (_currentK.hitBox.top - _currentK.hitBox.height) *
@@ -195,28 +294,51 @@ class _MainKeyboardState extends State<MainKeyboard> {
                           ),
                           child: Column(
                             children: [
-                              SizedBox(
-                                height: _currentK.hitBox.height *
-                                    screenWidth *
-                                    (constraint.orientation == Orientation.landscape
-                                        ? preset.orientationFactor
-                                        : 1),
-                                width: _currentK.hitBox.width * screenWidth,
-                                child: Center(
-                                  child: Text(
-                                    _longPressed ? _currentK.longClickLabel ?? _currentK.label : _currentK.label,
-                                    style: const TextStyle(fontSize: 40),
+                              if (!_currentK.functional || _longPressed && _currentK.longClickLabel != null)
+                                SizedBox(
+                                  height: _currentK.hitBox.height *
+                                      screenWidth *
+                                      (constraint.orientation == Orientation.landscape ? preset.orientationFactor : 1),
+                                  width: _currentK.hitBox.width * screenWidth,
+                                  child: Center(
+                                    child: _currentK.composing == null
+                                        ? _longPressed && _currentK.longClickLabel != null
+                                            ? Text(
+                                                _currentK.longClickLabel ?? '',
+                                                style: TextStyle(fontSize: preset.fontSize),
+                                              )
+                                            : _currentK.icon != null
+                                                ? Icon(_currentK.icon)
+                                                : Text(
+                                                    _currentK.label,
+                                                    style: TextStyle(fontSize: preset.fontSize),
+                                                  )
+                                        : Observer(
+                                            builder: (context) {
+                                              return _longPressed && _currentK.longClickLabel != null
+                                                  ? Text(
+                                                      _currentK.longClickLabel ?? '',
+                                                      style: TextStyle(fontSize: preset.fontSize),
+                                                    )
+                                                  : _currentK.icon != null
+                                                      ? Icon(_currentK.icon)
+                                                      : Text(
+                                                          status.isComposing
+                                                              ? _currentK.composingLabel ?? _currentK.label
+                                                              : _currentK.label,
+                                                          style: TextStyle(fontSize: preset.fontSize),
+                                                        );
+                                            },
+                                          ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: _currentK.hitBox.height *
-                                    screenWidth *
-                                    (constraint.orientation == Orientation.landscape
-                                        ? preset.orientationFactor
-                                        : 1),
-                                width: _currentK.hitBox.width * screenWidth,
-                              ),
+                              if (!_currentK.functional)
+                                SizedBox(
+                                  height: _currentK.hitBox.height *
+                                      screenWidth *
+                                      (constraint.orientation == Orientation.landscape ? preset.orientationFactor : 1),
+                                  width: _currentK.hitBox.width * screenWidth,
+                                ),
                             ],
                           ),
                         ),

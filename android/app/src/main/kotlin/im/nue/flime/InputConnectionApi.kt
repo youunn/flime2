@@ -8,6 +8,11 @@ import android.view.KeyEvent
 
 class InputConnectionApi(private val inputMethodService: InputMethodService) :
     Pigeon.InputConnectionApi {
+    private var _actionId: Long = 0
+    fun setActionId (actionId: Int) {
+        _actionId = actionId.toLong()
+    }
+
     override fun commit(text: String) {
         inputMethodService.currentInputConnection.commitText(text, 1)
     }
@@ -46,7 +51,11 @@ class InputConnectionApi(private val inputMethodService: InputMethodService) :
         inputMethodService.sendKeyChar('\n');
     }
 
-    override fun getEditorInfo(): Long {
-        return inputMethodService.currentInputEditorInfo.actionId.toLong()
+    override fun handleBack() {
+        inputMethodService.requestHideSelf(0)
+    }
+
+    override fun getActionId(): Long {
+        return _actionId;
     }
 }

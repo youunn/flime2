@@ -5,6 +5,7 @@ import 'package:flime/api/platform_api.g.dart';
 import 'package:flime/keyboard/base/event.dart';
 import 'package:flime/keyboard/stores/keyboard_status.dart';
 import 'package:flime/utils/ffi.dart';
+import 'package:flime/utils/keyboard_maps.dart';
 import 'package:flime/utils/path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +15,7 @@ abstract class InputService {
 
   bool processKey(int code, int mask);
 
-  Future<void> handleEvent(KEvent event, BuildContext context, InputConnectionApi inputConnectionApi);
+  Future<void> handleEvent(KEvent event, BuildContext context);
 
   String getCommit();
 
@@ -27,8 +28,9 @@ abstract class InputService {
 
 class RimeService implements InputService {
   final KeyboardStatus _keyboardStatus;
+  final InputConnectionApi _inputConnectionApi;
 
-  RimeService(this._keyboardStatus) {
+  RimeService(this._keyboardStatus, this._inputConnectionApi) {
     InputServiceApi.setup(RimeInputServiceApi(this));
   }
 
@@ -42,36 +44,58 @@ class RimeService implements InputService {
 
   @override
   bool processKey(int code, int mask) {
+    // convert letter case
+    if (code >= lowerACode && code <= lowerZCode && mask == KEvent.modifierShift) {
+      code -= caseDiff;
+      mask = 0;
+    }
     final result = rimeBridge.process_key(code, mask);
     return result > 0;
   }
 
   @override
-  Future<void> handleEvent(KEvent event, BuildContext context, InputConnectionApi inputConnectionApi) async {
+  Future<void> handleEvent(KEvent event, BuildContext context) async {
     final code = event.code;
+    final androidCode = event.androidCode;
     if (code != null) {
       if (processKey(code, event.mask | _keyboardStatus.modifierState)) {
         final commit = getCommit();
         getContext();
         if (commit != '') {
-          await inputConnectionApi.commit(commit);
+          await _inputConnectionApi.commit(commit);
         }
       } else {
-        final code = event.androidCode;
-        final androidMask = event.androidMask;
-        if (code != null) {
+        if (androidCode != null) {
+          final androidMask = event.androidMask;
           final mask = androidMask | KEvent.getAndroidMask(_keyboardStatus.modifierState);
-          if (kAndroidToLogicalKey[code] == LogicalKeyboardKey.enter && mask == 0) {
-            await inputConnectionApi.performEnter();
+          if (kAndroidToLogicalKey[androidCode] == LogicalKeyboardKey.enter && mask == 0) {
+            await _inputConnectionApi.performEnter();
+          } else if (kAndroidToLogicalKey[androidCode] == LogicalKeyboardKey.goBack && mask == 0) {
+            await _inputConnectionApi.handleBack();
           } else {
-            await inputConnectionApi.send(code, mask);
+            await _inputConnectionApi.send(androidCode, mask);
           }
         }
+      }
+      if (_keyboardStatus.shiftLock == false) {
+        _keyboardStatus
+          ..setModifier(KEvent.modifierShift, state: false)
+          ..shiftLock = null;
       }
     } else {
       final command = event.command;
       if (command != null) {
         command(context, _keyboardStatus);
+      } else if (androidCode != null) {
+        final androidMask = event.androidMask;
+        final mask = androidMask | KEvent.getAndroidMask(_keyboardStatus.modifierState);
+        if (kAndroidToLogicalKey[androidCode] == LogicalKeyboardKey.enter && mask == 0) {
+          await _inputConnectionApi.performEnter();
+        } else if (kAndroidToLogicalKey[androidCode] == LogicalKeyboardKey.goBack && mask == 0) {
+          await _inputConnectionApi.handleBack();
+        } else {
+          await _inputConnectionApi.send(androidCode, mask);
+        }
       }
     }
   }
@@ -89,10 +113,13 @@ class RimeService implements InputService {
 
   @override
   void getContext() {
-    final isComposing = rimeBridge.is_composing() > 0;
-    if (_keyboardStatus.isComposing != isComposing) {
-      _keyboardStatus.isComposing = isComposing;
-    }
+    final status = rimeBridge.get_status();
+    if (status == nullptr) return;
+    _keyboardStatus
+      ..schemaId = status.ref.schema_id.toDartString()
+      ..schemaName = status.ref.schema_name.toDartString()
+      ..isAsciiMode = status.ref.is_ascii_mode > 0
+      ..isComposing = status.ref.is_composing > 0;
 
     final context = rimeBridge.get_context();
     if (context == nullptr) return;
@@ -120,6 +147,14 @@ class RimeInputServiceApi extends InputServiceApi {
   final RimeService _service;
 
   RimeInputServiceApi(this._service);
+
+  @override
+  void startInputView() {
+    _service._inputConnectionApi.getActionId().then((value) {
+      // TODO: can't update immediately
+      _service._keyboardStatus.editorAction = value;
+    });
+  }
 
   @override
   void finalize() {
