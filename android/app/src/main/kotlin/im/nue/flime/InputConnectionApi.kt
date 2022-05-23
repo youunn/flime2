@@ -42,6 +42,10 @@ class InputConnectionApi(private val inputMethodService: InputMethodService) :
         inputMethodService.currentInputConnection.endBatchEdit()
     }
 
+    override fun performEnter() {
+        inputMethodService.sendKeyChar('\n');
+    }
+
     override fun getEditorInfo(): Long {
         return inputMethodService.currentInputEditorInfo.actionId.toLong()
     }

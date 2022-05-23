@@ -129,6 +129,7 @@ public class Pigeon {
   public interface InputConnectionApi {
     void commit(@NonNull String text);
     void send(@NonNull Long code, @NonNull Long mask);
+    void performEnter();
     @NonNull Long getEditorInfo();
 
     /** The codec used by InputConnectionApi. */
@@ -179,6 +180,25 @@ public class Pigeon {
                 throw new NullPointerException("maskArg unexpectedly null.");
               }
               api.send((codeArg == null) ? null : codeArg.longValue(), (maskArg == null) ? null : maskArg.longValue());
+              wrapped.put("result", null);
+            }
+            catch (Error | RuntimeException exception) {
+              wrapped.put("error", wrapError(exception));
+            }
+            reply.reply(wrapped);
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.InputConnectionApi.performEnter", getCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            Map<String, Object> wrapped = new HashMap<>();
+            try {
+              api.performEnter();
               wrapped.put("result", null);
             }
             catch (Error | RuntimeException exception) {

@@ -7,6 +7,7 @@ import 'package:flime/keyboard/stores/keyboard_status.dart';
 import 'package:flime/utils/ffi.dart';
 import 'package:flime/utils/path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 abstract class InputService {
   Future init();
@@ -59,7 +60,12 @@ class RimeService implements InputService {
         final code = event.androidCode;
         final androidMask = event.androidMask;
         if (code != null) {
-          await inputConnectionApi.send(code, androidMask | KEvent.getAndroidMask(_keyboardStatus.modifierState));
+          final mask = androidMask | KEvent.getAndroidMask(_keyboardStatus.modifierState);
+          if (kAndroidToLogicalKey[code] == LogicalKeyboardKey.enter && mask == 0) {
+            await inputConnectionApi.performEnter();
+          } else {
+            await inputConnectionApi.send(code, mask);
+          }
         }
       }
     } else {

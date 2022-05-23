@@ -18,6 +18,8 @@ abstract class InputConnectionApi {
 
   void send(int code, int mask);
 
+  void performEnter();
+
   int getEditorInfo();
 }
 
