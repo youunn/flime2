@@ -380,5 +380,5 @@ class MoreKeysPanel extends Preset {
 enum Highlight {
   shift,
   enter,
-  symbol,
+  space,
 }

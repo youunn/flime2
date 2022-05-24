@@ -117,10 +117,9 @@ class PrimaryKeyboardLayout extends StatelessWidget {
           icon: Icons.onetwothree,
           width: 0.18,
           functional: true,
-          highlight: Highlight.symbol,
         )
         ..c(Lk.comma, width: 0.18, composing: KEvent(key: Lk.semicolon))
-        ..c(Lk.space, label: '', repeatable: true, width: 0.34, functional: true, highlight: Highlight.symbol)
+        ..c(Lk.space, label: '', repeatable: true, width: 0.34, functional: true, highlight: Highlight.space)
         ..c(
           Lk.period,
           width: 0.14,

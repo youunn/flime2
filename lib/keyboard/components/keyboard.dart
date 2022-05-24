@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flime/api/platform_api.g.dart';
 import 'package:flime/keyboard/base/preset.dart';
 import 'package:flime/keyboard/services/input_service.dart';
 import 'package:flime/keyboard/stores/constraint.dart';
@@ -51,16 +50,33 @@ class _MainKeyboardState extends State<MainKeyboard> {
                 TapGestureRecognizer: GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
                   () => TapGestureRecognizer(),
                   (instance) {
-                    instance.onTapUp = (_) async {
-                      final k = _currentK;
-                      if (k != _dummy) {
-                        final event = status.isComposing ? k.composing ?? k.click : k.click;
-                        await inputService.handleEvent(event, context);
-                        setState(() {
-                          _currentK = _dummy;
-                        });
+                    instance
+                      ..onTapUp = (details) async {
+                        final k = await preset.detectKey(
+                          details.localPosition,
+                          screenWidth,
+                          orientation: constraint.orientation,
+                        );
+                        if (k != null) {
+                          setState(() {
+                            _currentK = k;
+                          });
+
+                          final event = status.isComposing ? k.composing ?? k.click : k.click;
+                          await inputService.handleEvent(event, this.context);
+                          setState(() {
+                            _currentK = _dummy;
+                          });
+                        }
                       }
-                    };
+                      ..onTapCancel = () {
+                        final k = _currentK;
+                        if (k != _dummy) {
+                          setState(() {
+                            _currentK = _dummy;
+                          });
+                        }
+                      };
                   },
                 ),
                 LongPressGestureRecognizer: GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
@@ -79,17 +95,27 @@ class _MainKeyboardState extends State<MainKeyboard> {
                           });
                         }
                       }
-                      ..onLongPressStart = (_) async {
-                        setState(() {
-                          _longPressed = true;
-                        });
+                      ..onLongPressStart = (details) async {
+                        final k = await preset.detectKey(
+                          details.localPosition,
+                          screenWidth,
+                          orientation: constraint.orientation,
+                        );
+                        if (k != null) {
+                          setState(() {
+                            _currentK = k;
+                          });
 
-                        final k = _currentK;
-                        if (k.repeatable) {
-                          while (_longPressed) {
-                            final event = status.isComposing ? k.composing ?? k.click : k.click;
-                            await inputService.handleEvent(event, context);
-                            await Future.delayed(settings.repeatInterval);
+                          setState(() {
+                            _longPressed = true;
+                          });
+
+                          if (k.repeatable) {
+                            while (_longPressed) {
+                              final event = status.isComposing ? k.composing ?? k.click : k.click;
+                              await inputService.handleEvent(event, context);
+                              await Future.delayed(settings.repeatInterval);
+                            }
                           }
                         }
                       }
@@ -146,6 +172,12 @@ class _MainKeyboardState extends State<MainKeyboard> {
                             _longPressed = false;
                           });
                         }
+                        final k = _currentK;
+                        if (k != _dummy) {
+                          setState(() {
+                            _currentK = _dummy;
+                          });
+                        }
                       }
                       ..onLongPressMoveUpdate = (details) {
                         // TODO: animation
@@ -167,45 +199,82 @@ class _MainKeyboardState extends State<MainKeyboard> {
                             children: [
                               for (final k in r)
                                 if (k.highlight == Highlight.enter)
-                                  SizedBox(
-                                    height: k.hitBox.height *
-                                        screenWidth *
-                                        (constraint.orientation == Orientation.landscape
-                                            ? preset.orientationFactor
-                                            : 1),
-                                    width: k.hitBox.width * screenWidth,
-                                    child: Center(
-                                      child: Builder(
-                                        builder: (_) {
-                                          const imeActionNone = 1;
-                                          const imeActionGo = 2;
-                                          const imeActionSearch = 3;
-                                          const imeActionSend = 4;
-                                          const imeActionNext = 5;
-                                          const imeActionDone = 6;
-                                          const imeActionPrevious = 7;
-                                          IconData iconData;
-                                          if (status.editorAction == imeActionNone) {
-                                            iconData = Icons.keyboard_return;
-                                          } else if (status.editorAction == imeActionGo) {
-                                            iconData = Icons.arrow_right_alt;
-                                          } else if (status.editorAction == imeActionSearch) {
-                                            iconData = Icons.search;
-                                          } else if (status.editorAction == imeActionSend) {
-                                            iconData = Icons.send;
-                                          } else if (status.editorAction == imeActionNext) {
-                                            iconData = Icons.chevron_right;
-                                          } else if (status.editorAction == imeActionDone) {
-                                            iconData = Icons.done;
-                                          } else if (status.editorAction == imeActionPrevious) {
-                                            iconData = Icons.chevron_left;
-                                          } else {
-                                            iconData = Icons.keyboard_return;
-                                          }
-                                          return Icon(iconData);
-                                        },
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height: k.hitBox.height *
+                                            screenWidth *
+                                            (constraint.orientation == Orientation.landscape
+                                                ? preset.orientationFactor
+                                                : 1) *
+                                            2 /
+                                            3,
+                                        width: k.hitBox.width * screenWidth,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 8,
+                                            right: 8,
+                                          ),
+                                          child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).colorScheme.secondaryContainer,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(k.hitBox.height *
+                                                    screenWidth *
+                                                    (constraint.orientation == Orientation.landscape
+                                                        ? preset.orientationFactor
+                                                        : 1) /
+                                                    2 *
+                                                    2 /
+                                                    3),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(
+                                        height: k.hitBox.height *
+                                            screenWidth *
+                                            (constraint.orientation == Orientation.landscape
+                                                ? preset.orientationFactor
+                                                : 1),
+                                        width: k.hitBox.width * screenWidth,
+                                        child: Center(
+                                          child: () {
+                                            const imeActionNone = 1;
+                                            const imeActionGo = 2;
+                                            const imeActionSearch = 3;
+                                            const imeActionSend = 4;
+                                            const imeActionNext = 5;
+                                            const imeActionDone = 6;
+                                            const imeActionPrevious = 7;
+                                            IconData iconData;
+                                            if (status.editorAction == imeActionNone) {
+                                              iconData = Icons.keyboard_return;
+                                            } else if (status.editorAction == imeActionGo) {
+                                              iconData = Icons.arrow_right_alt;
+                                            } else if (status.editorAction == imeActionSearch) {
+                                              iconData = Icons.search;
+                                            } else if (status.editorAction == imeActionSend) {
+                                              iconData = Icons.send;
+                                            } else if (status.editorAction == imeActionNext) {
+                                              iconData = Icons.chevron_right;
+                                            } else if (status.editorAction == imeActionDone) {
+                                              iconData = Icons.done;
+                                            } else if (status.editorAction == imeActionPrevious) {
+                                              iconData = Icons.chevron_left;
+                                            } else {
+                                              iconData = Icons.keyboard_return;
+                                            }
+                                            return Icon(
+                                              iconData,
+                                              color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                            );
+                                          }(),
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 else if (k.highlight == Highlight.shift)
                                   SizedBox(
@@ -229,22 +298,58 @@ class _MainKeyboardState extends State<MainKeyboard> {
                                       ),
                                     ),
                                   )
-                                else if (k.highlight == Highlight.symbol)
-                                  SizedBox(
-                                    height: k.hitBox.height *
-                                        screenWidth *
-                                        (constraint.orientation == Orientation.landscape
-                                            ? preset.orientationFactor
-                                            : 1),
-                                    width: k.hitBox.width * screenWidth,
-                                    child: Center(
-                                      child: k.icon != null
-                                          ? Icon(k.icon)
-                                          : Text(
-                                              k.label,
-                                              style: TextStyle(fontSize: preset.fontSize),
+                                else if (k.highlight == Highlight.space)
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height: k.hitBox.height *
+                                            screenWidth *
+                                            (constraint.orientation == Orientation.landscape
+                                                ? preset.orientationFactor
+                                                : 1) *
+                                            2 /
+                                            3,
+                                        width: k.hitBox.width * screenWidth,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 8,
+                                            right: 8,
+                                          ),
+                                          child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).colorScheme.background,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(k.hitBox.height *
+                                                    screenWidth *
+                                                    (constraint.orientation == Orientation.landscape
+                                                        ? preset.orientationFactor
+                                                        : 1) /
+                                                    2 *
+                                                    2 /
+                                                    3),
+                                              ),
                                             ),
-                                    ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: k.hitBox.height *
+                                            screenWidth *
+                                            (constraint.orientation == Orientation.landscape
+                                                ? preset.orientationFactor
+                                                : 1),
+                                        width: k.hitBox.width * screenWidth,
+                                        child: Center(
+                                          child: k.icon != null
+                                              ? Icon(k.icon)
+                                              : Text(
+                                                  k.label,
+                                                  style: TextStyle(fontSize: preset.fontSize),
+                                                ),
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 else
                                   SizedBox(
