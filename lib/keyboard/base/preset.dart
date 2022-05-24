@@ -11,8 +11,6 @@ class K {
   final Rectangle<double> hitBox;
   final String label;
   final KEvent click;
-  final KEvent? longClick;
-  final String? longClickLabel;
   final bool repeatable;
   final MoreKeysPanel? more;
   final KEvent? composing;
@@ -22,15 +20,13 @@ class K {
   final bool functional;
   final Highlight? highlight;
 
-  static const emptyHitBox = Rectangle<double>(0, 0, 0, 0);
+  static const _emptyHitBox = Rectangle<double>(0, 0, 0, 0);
 
   K({
     required this.preset,
     required this.hitBox,
     required this.label,
     required this.click,
-    this.longClick,
-    this.longClickLabel,
     this.repeatable = false,
     this.more,
     this.composing,
@@ -39,11 +35,12 @@ class K {
     this.functional = false,
     this.highlight,
   }) {
+    final more = this.more;
     if (more == null) {
       moreKeysPanelBox = null;
     } else {
-      final h = more?.totalHeight ?? 0;
-      final w = more?.maxRowWidth ?? 0;
+      final h = more.totalHeight + more.padding * 2;
+      final w = more.maxRowWidth + more.padding * 2;
       final realTop = hitBox.top - h;
       final left = hitBox.left + hitBox.width / 2 - (w / 2);
       final right = hitBox.right - hitBox.width / 2 + (w / 2);
@@ -62,7 +59,7 @@ class K {
   K.dummy(Preset preset)
       : this(
           preset: preset,
-          hitBox: emptyHitBox,
+          hitBox: _emptyHitBox,
           label: '',
           click: KEvent(),
         );
@@ -126,12 +123,22 @@ class KRow extends Iterable<K> {
     final h = height ?? this.height;
     final hitBox = Rectangle<double>(x, y, w, h);
 
+    if (more == null && longClick != null) {
+      more = MoreKeysPanel(
+        width: width ?? preset.width,
+        height: height ?? preset.height,
+        fontSize: preset.fontSize,
+        orientationFactor: preset.orientationFactor,
+        radius: (height ?? preset.height) / 2,
+      )..r((r) {
+          return r..k(click: longClick, label: longClickLabel ?? '');
+        });
+    }
+
     final key = K(
       preset: preset,
       label: label,
       click: click,
-      longClick: longClick,
-      longClickLabel: longClickLabel,
       repeatable: repeatable,
       hitBox: hitBox,
       more: more,
@@ -163,40 +170,7 @@ class KRow extends Iterable<K> {
     k(
       click: KEvent(key: logicalKey),
       label: label ?? logicalKey.keyLabel.toLowerCase(),
-      longClick: longClickEvent ?? KEvent(key: longClick),
-      longClickLabel: longClickLabel ?? longClick?.keyLabel.toLowerCase(),
-      repeatable: repeatable,
-      width: width,
-      height: height,
-      more: more,
-      composing: composing,
-      composingLabel: composingLabel,
-      icon: icon,
-      functional: functional,
-      highlight: highlight,
-    );
-  }
-
-  void s(
-    LogicalKeyboardKey logicalKey, {
-    String? label,
-    LogicalKeyboardKey? longClick,
-    KEvent? longClickEvent,
-    String? longClickLabel,
-    bool repeatable = false,
-    double? width,
-    double? height,
-    MoreKeysPanel? more,
-    KEvent? composing,
-    String? composingLabel,
-    IconData? icon,
-    bool functional = false,
-    Highlight? highlight,
-  }) {
-    k(
-      click: KEvent(key: logicalKey, mask: KEvent.modifierShift),
-      label: label ?? logicalKey.keyLabel.toUpperCase(),
-      longClick: longClickEvent ?? KEvent(key: longClick),
+      longClick: longClickEvent ?? (longClick != null ? KEvent(key: longClick) : null),
       longClickLabel: longClickLabel ?? longClick?.keyLabel.toLowerCase(),
       repeatable: repeatable,
       width: width,
@@ -373,8 +347,16 @@ class Preset extends Iterable<KRow> {
 }
 
 class MoreKeysPanel extends Preset {
-  MoreKeysPanel(
-      {required super.width, required super.height, required super.fontSize, required super.orientationFactor});
+  final double padding;
+  final double radius;
+  MoreKeysPanel({
+    required super.width,
+    required super.height,
+    required super.fontSize,
+    required super.orientationFactor,
+    this.padding = 0,
+    this.radius = 0,
+  });
 }
 
 enum Highlight {

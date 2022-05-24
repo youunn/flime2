@@ -153,6 +153,22 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
     });
   }
 
+  late final _$editorActionAtom =
+      Atom(name: 'AbstractKeyboardStatus.editorAction', context: context);
+
+  @override
+  int get editorAction {
+    _$editorActionAtom.reportRead();
+    return super.editorAction;
+  }
+
+  @override
+  set editorAction(int value) {
+    _$editorActionAtom.reportWrite(value, super.editorAction, () {
+      super.editorAction = value;
+    });
+  }
+
   late final _$AbstractKeyboardStatusActionController =
       ActionController(name: 'AbstractKeyboardStatus', context: context);
 
@@ -189,7 +205,8 @@ schemaName: ${schemaName},
 candidates: ${candidates},
 comments: ${comments},
 shiftLock: ${shiftLock},
-preedit: ${preedit}
+preedit: ${preedit},
+editorAction: ${editorAction}
     ''';
   }
 }

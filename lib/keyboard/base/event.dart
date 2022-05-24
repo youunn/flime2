@@ -14,6 +14,7 @@ class KEvent {
   final LogicalKeyboardKey? key;
   final Command? command;
 
+  // TODO: add const constructor
   KEvent({
     this.key,
     this.command,

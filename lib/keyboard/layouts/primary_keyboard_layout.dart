@@ -10,7 +10,7 @@ class PrimaryKeyboardLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainKeyboard(
+    return Keyboard(
       preset: _preset,
     );
   }
@@ -38,8 +38,8 @@ class PrimaryKeyboardLayout extends StatelessWidget {
     // 第二行
     ..r(
       (r) => r
-        ..c(Sl.keyA, longClick: Lk.exclamation, label: '', width: 0.05)
-        ..c(Sl.keyA, longClick: Lk.exclamation)
+        ..c(Sl.keyA, longClick: Lk.backquote, label: '', width: 0.05)
+        ..c(Sl.keyA, longClick: Lk.backquote)
         ..c(Sl.keyS, longClick: Lk.minus)
         ..c(Sl.keyD, longClick: Lk.underscore)
         ..c(Sl.keyF, longClick: Lk.equal)
@@ -110,6 +110,11 @@ class PrimaryKeyboardLayout extends StatelessWidget {
           click: KEvent(
             command: (context, _) {
               // TODO: animation
+              context.router.replace(const SymbolKeyboardRoute());
+            },
+          ),
+          longClick: KEvent(
+            command: (context, _) {
               context.router.replace(const NumberKeyboardRoute());
             },
           ),
@@ -123,7 +128,14 @@ class PrimaryKeyboardLayout extends StatelessWidget {
         ..c(
           Lk.period,
           width: 0.14,
-          more: MoreKeysPanel(width: 0.1, height: 0.15, fontSize: 26, orientationFactor: 0.45)
+          more: MoreKeysPanel(
+            width: 0.1,
+            height: 0.15,
+            fontSize: 22,
+            orientationFactor: 0.45,
+            padding: 0.01,
+            radius: 0.075,
+          )
             ..r(
               (r) => r
                 ..c(Lk.at)
@@ -138,7 +150,7 @@ class PrimaryKeyboardLayout extends StatelessWidget {
             )
             ..r(
               (r) => r
-                ..c(Lk.backquote)
+                ..c(Lk.exclamation)
                 ..c(Lk.tilde)
                 ..c(Lk.less)
                 ..c(Lk.greater)

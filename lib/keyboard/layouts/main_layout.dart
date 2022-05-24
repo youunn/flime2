@@ -215,7 +215,18 @@ class Candidates extends StatelessWidget {
                 builder: (context) {
                   return Row(
                     children: [
-                      for (var i = 0; i < status.candidates.length; i++)
+                      for (var i = 0; i < status.candidates.length; i++) ...[
+                        SizedBox(
+                          width: 1,
+                          child: FractionallySizedBox(
+                            heightFactor: 0.5,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.onSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
                         Expanded(
                           flex: 1,
                           child: InkWell(
@@ -244,6 +255,7 @@ class Candidates extends StatelessWidget {
                             },
                           ),
                         ),
+                      ],
                     ],
                   );
                 },

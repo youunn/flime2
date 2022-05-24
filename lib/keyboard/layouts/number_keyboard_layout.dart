@@ -10,7 +10,7 @@ class NumberKeyboardLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MainKeyboard(
+    return Keyboard(
       preset: _preset,
       landscapePreset: _landscapePreset,
     );
