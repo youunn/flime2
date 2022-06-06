@@ -6,8 +6,8 @@ import 'package:flime/keyboard/components/keyboard_wrapper.dart';
 import 'package:flime/keyboard/router/router.dart';
 import 'package:flutter/material.dart';
 
-class PrimaryKeyboardLayout extends StatelessWidget {
-  const PrimaryKeyboardLayout({Key? key}) : super(key: key);
+class FullKeyboardLayout extends StatelessWidget {
+  const FullKeyboardLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,23 +20,37 @@ class PrimaryKeyboardLayout extends StatelessWidget {
 
   static final _preset = Preset(
     width: 0.1,
-    height: 0.15,
-    fontSize: 26,
+    height: 0.13,
+    fontSize: 20,
     orientationFactor: 0.45,
   )
+    // 扩展行
+    ..r(
+      (r) => r
+        ..c(Lk.digit1, longClick: Lk.exclamation)
+        ..c(Lk.digit2, longClick: Lk.at)
+        ..c(Lk.digit3, longClick: Lk.numberSign)
+        ..c(Lk.digit4, longClick: Lk.dollar)
+        ..c(Lk.digit5, longClick: Lk.percent)
+        ..c(Lk.digit6, longClick: Lk.caret)
+        ..c(Lk.digit7, longClick: Lk.ampersand)
+        ..c(Lk.digit8, longClick: Lk.asterisk)
+        ..c(Lk.digit9, longClick: Lk.parenthesisLeft)
+        ..c(Lk.digit0, longClick: Lk.parenthesisRight),
+    )
     // 第一行
     ..r(
       (r) => r
-        ..c(Sl.keyQ, longClick: Lk.digit1)
-        ..c(Sl.keyW, longClick: Lk.digit2)
-        ..c(Sl.keyE, longClick: Lk.digit3)
-        ..c(Sl.keyR, longClick: Lk.digit4)
-        ..c(Sl.keyT, longClick: Lk.digit5)
-        ..c(Sl.keyY, longClick: Lk.digit6)
-        ..c(Sl.keyU, longClick: Lk.digit7)
-        ..c(Sl.keyI, longClick: Lk.digit8)
-        ..c(Sl.keyO, longClick: Lk.digit9)
-        ..c(Sl.keyP, longClick: Lk.digit0),
+        ..c(Sl.keyQ, longClick: Lk.tilde)
+        ..c(Sl.keyW, longClick: Lk.tab)
+        ..c(Sl.keyE, longClick: Lk.escape)
+        ..c(Sl.keyR, longClick: Lk.less)
+        ..c(Sl.keyT, longClick: Lk.greater)
+        ..c(Sl.keyY, longClick: Lk.braceLeft)
+        ..c(Sl.keyU, longClick: Lk.braceRight)
+        ..c(Sl.keyI, longClick: Lk.bracketLeft)
+        ..c(Sl.keyO, longClick: Lk.bracketRight)
+        ..c(Sl.keyP, longClick: Lk.bar),
     )
     // 第二行
     ..r(
@@ -112,59 +126,77 @@ class PrimaryKeyboardLayout extends StatelessWidget {
         ..k(
           click: KEvent(
             command: (context, _) {
-              context.router.navigate(const SymbolKeyboardRoute());
+              context.router.navigate(const FunctionalKeyboardRoute());
             },
           ),
           longClick: KEvent(
             command: (context, _) {
-              context.router.navigate(const NumberKeyboardRoute());
+              context.router.replace(
+                const MainRoute(
+                  children: [
+                    PrimaryKeyboardRoute(),
+                  ],
+                ),
+              );
             },
           ),
           label: '',
           icon: Icons.onetwothree,
-          width: 0.18,
+          width: 0.15,
           functional: true,
         )
-        ..c(Lk.comma, width: 0.18, composing: KEvent(key: Lk.semicolon))
-        ..c(Lk.space, label: '', repeatable: true, width: 0.34, functional: true, highlight: Highlight.space)
-        ..c(
-          Lk.period,
-          width: 0.14,
-          more: MoreKeysPanel(
-            width: 0.1,
-            height: 0.15,
-            fontSize: 22,
-            orientationFactor: 0.45,
-            padding: 0.01,
-            radius: 0.075,
-          )
-            ..r(
-              (r) => r
-                ..c(Lk.at)
-                ..c(Lk.numberSign)
-                ..c(Lk.dollar)
-                ..c(Lk.percent)
-                ..c(Lk.caret)
-                ..c(Lk.ampersand)
-                ..c(Lk.asterisk)
-                ..c(Lk.parenthesisLeft)
-                ..c(Lk.parenthesisRight),
-            )
-            ..r(
-              (r) => r
-                ..c(Lk.exclamation)
-                ..c(Lk.tilde)
-                ..c(Lk.less)
-                ..c(Lk.greater)
-                ..c(Lk.bracketLeft)
-                ..c(Lk.bracketRight)
-                ..c(Lk.braceLeft)
-                ..c(Lk.braceRight)
-                ..c(Lk.bar),
-            ),
-          composing: KEvent(key: Lk.quoteSingle),
+        ..k(
+          click: KEvent(
+            command: (_, status) {
+              if (status.controlLock != null) {
+                status.controlLock = null;
+              } else {
+                status
+                  ..setModifier(KEvent.modifierControl, state: true)
+                  ..controlLock = false;
+              }
+            },
+          ),
+          label: 'Ctrl',
+          functional: true,
+          highlight: Highlight.control,
         )
-        ..c(Lk.enter, label: 'Enter', highlight: Highlight.enter, functional: true, width: 0.16),
+        ..k(
+          click: KEvent(
+            command: (_, status) {
+              if (status.metaLock != null) {
+                status.metaLock = null;
+              } else {
+                status
+                  ..setModifier(KEvent.modifierMeta, state: true)
+                  ..metaLock = false;
+              }
+            },
+          ),
+          label: 'Super',
+          functional: true,
+          highlight: Highlight.meta,
+        )
+        ..k(
+          click: KEvent(
+            command: (_, status) {
+              if (status.altLock != null) {
+                status.altLock = null;
+              } else {
+                status
+                  ..setModifier(KEvent.modifierAlt, state: true)
+                  ..altLock = false;
+              }
+            },
+          ),
+          label: 'Alt',
+          functional: true,
+          highlight: Highlight.alt,
+        )
+        ..c(Lk.space, label: '', repeatable: true, width: 0.20, functional: true, highlight: Highlight.space)
+        ..c(Lk.comma, width: 0.10, composing: KEvent(key: Lk.semicolon))
+        ..c(Lk.period, width: 0.10, composing: KEvent(key: Lk.quoteSingle))
+        ..c(Lk.enter, label: 'Enter', highlight: Highlight.enter, functional: true, width: 0.15),
       height: 0.18,
     )
     // 初始化

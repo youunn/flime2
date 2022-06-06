@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flime/keyboard/base/event.dart';
 import 'package:flime/keyboard/base/preset.dart';
 import 'package:flime/keyboard/components/keyboard.dart';
+import 'package:flime/keyboard/components/keyboard_wrapper.dart';
 import 'package:flime/keyboard/router/router.dart';
 import 'package:flutter/material.dart';
 
@@ -10,9 +11,11 @@ class NumberKeyboardLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Keyboard(
-      preset: _preset,
-      landscapePreset: _landscapePreset,
+    return KeyboardWrapper(
+      child: Keyboard(
+        preset: _preset,
+        landscapePreset: _landscapePreset,
+      ),
     );
   }
 
@@ -51,7 +54,7 @@ class NumberKeyboardLayout extends StatelessWidget {
         ..k(
           click: KEvent(
             command: (context, _) {
-              context.router.replace(const PrimaryKeyboardRoute());
+              context.router.navigate(const PrimaryKeyboardRoute());
             },
           ),
           label: '',
@@ -102,7 +105,7 @@ class NumberKeyboardLayout extends StatelessWidget {
         ..k(
           click: KEvent(
             command: (context, _) {
-              context.router.replace(const PrimaryKeyboardRoute());
+              context.router.navigate(const PrimaryKeyboardRoute());
             },
           ),
           label: 'abc',

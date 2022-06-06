@@ -137,6 +137,54 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
     });
   }
 
+  late final _$controlLockAtom =
+      Atom(name: 'AbstractKeyboardStatus.controlLock', context: context);
+
+  @override
+  bool? get controlLock {
+    _$controlLockAtom.reportRead();
+    return super.controlLock;
+  }
+
+  @override
+  set controlLock(bool? value) {
+    _$controlLockAtom.reportWrite(value, super.controlLock, () {
+      super.controlLock = value;
+    });
+  }
+
+  late final _$metaLockAtom =
+      Atom(name: 'AbstractKeyboardStatus.metaLock', context: context);
+
+  @override
+  bool? get metaLock {
+    _$metaLockAtom.reportRead();
+    return super.metaLock;
+  }
+
+  @override
+  set metaLock(bool? value) {
+    _$metaLockAtom.reportWrite(value, super.metaLock, () {
+      super.metaLock = value;
+    });
+  }
+
+  late final _$altLockAtom =
+      Atom(name: 'AbstractKeyboardStatus.altLock', context: context);
+
+  @override
+  bool? get altLock {
+    _$altLockAtom.reportRead();
+    return super.altLock;
+  }
+
+  @override
+  set altLock(bool? value) {
+    _$altLockAtom.reportWrite(value, super.altLock, () {
+      super.altLock = value;
+    });
+  }
+
   late final _$preeditAtom =
       Atom(name: 'AbstractKeyboardStatus.preedit', context: context);
 
@@ -205,6 +253,9 @@ schemaName: ${schemaName},
 candidates: ${candidates},
 comments: ${comments},
 shiftLock: ${shiftLock},
+controlLock: ${controlLock},
+metaLock: ${metaLock},
+altLock: ${altLock},
 preedit: ${preedit},
 editorAction: ${editorAction}
     ''';

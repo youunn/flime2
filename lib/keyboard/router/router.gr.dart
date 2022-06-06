@@ -22,6 +22,10 @@ class _$KeyboardRouter extends RootStackRouter {
       return MaterialPageX<dynamic>(
           routeData: routeData, child: const MainLayout());
     },
+    ExtendedRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+          routeData: routeData, child: const ExtendedLayout());
+    },
     PrimaryKeyboardRoute.name: (routeData) {
       return MaterialPageX<dynamic>(
           routeData: routeData, child: const PrimaryKeyboardLayout());
@@ -33,12 +37,22 @@ class _$KeyboardRouter extends RootStackRouter {
     NumberKeyboardRoute.name: (routeData) {
       return MaterialPageX<dynamic>(
           routeData: routeData, child: const NumberKeyboardLayout());
+    },
+    FullKeyboardRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+          routeData: routeData, child: const FullKeyboardLayout());
+    },
+    FunctionalKeyboardRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+          routeData: routeData, child: const FunctionalKeyboardLayout());
     }
   };
 
   @override
   List<RouteConfig> get routes => [
-        RouteConfig(MainRoute.name, path: '/', children: [
+        RouteConfig('/#redirect',
+            path: '/', redirectTo: '/main', fullMatch: true),
+        RouteConfig(MainRoute.name, path: '/main', children: [
           RouteConfig('#redirect',
               path: '',
               parent: MainRoute.name,
@@ -50,6 +64,12 @@ class _$KeyboardRouter extends RootStackRouter {
               path: 'symbol', parent: MainRoute.name),
           RouteConfig(NumberKeyboardRoute.name,
               path: 'number', parent: MainRoute.name)
+        ]),
+        RouteConfig(ExtendedRoute.name, path: '/extended', children: [
+          RouteConfig(FullKeyboardRoute.name,
+              path: 'full', parent: ExtendedRoute.name),
+          RouteConfig(FunctionalKeyboardRoute.name,
+              path: 'functional', parent: ExtendedRoute.name)
         ])
       ];
 }
@@ -58,9 +78,18 @@ class _$KeyboardRouter extends RootStackRouter {
 /// [MainLayout]
 class MainRoute extends PageRouteInfo<void> {
   const MainRoute({List<PageRouteInfo>? children})
-      : super(MainRoute.name, path: '/', initialChildren: children);
+      : super(MainRoute.name, path: '/main', initialChildren: children);
 
   static const String name = 'MainRoute';
+}
+
+/// generated route for
+/// [ExtendedLayout]
+class ExtendedRoute extends PageRouteInfo<void> {
+  const ExtendedRoute({List<PageRouteInfo>? children})
+      : super(ExtendedRoute.name, path: '/extended', initialChildren: children);
+
+  static const String name = 'ExtendedRoute';
 }
 
 /// generated route for
@@ -86,4 +115,21 @@ class NumberKeyboardRoute extends PageRouteInfo<void> {
   const NumberKeyboardRoute() : super(NumberKeyboardRoute.name, path: 'number');
 
   static const String name = 'NumberKeyboardRoute';
+}
+
+/// generated route for
+/// [FullKeyboardLayout]
+class FullKeyboardRoute extends PageRouteInfo<void> {
+  const FullKeyboardRoute() : super(FullKeyboardRoute.name, path: 'full');
+
+  static const String name = 'FullKeyboardRoute';
+}
+
+/// generated route for
+/// [FunctionalKeyboardLayout]
+class FunctionalKeyboardRoute extends PageRouteInfo<void> {
+  const FunctionalKeyboardRoute()
+      : super(FunctionalKeyboardRoute.name, path: 'functional');
+
+  static const String name = 'FunctionalKeyboardRoute';
 }

@@ -28,6 +28,12 @@ abstract class AbstractKeyboardStatus with Store {
 
   @observable
   bool? shiftLock;
+  @observable
+  bool? controlLock;
+  @observable
+  bool? metaLock;
+  @observable
+  bool? altLock;
 
   @observable
   String? preedit;

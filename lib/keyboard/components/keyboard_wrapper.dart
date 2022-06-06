@@ -20,8 +20,10 @@ class KeyboardWrapper extends StatelessWidget {
               (_) {
                 final box = boxKey.currentContext!.findRenderObject() as RenderBox;
                 final w = box.getMaxIntrinsicWidth(double.infinity);
+                final height = box.getMaxIntrinsicHeight(w);
+
                 constraint
-                  ..height = box.getMaxIntrinsicHeight(w)
+                  ..height = height
                   ..dpr = MediaQuery.of(context).devicePixelRatio
                   ..updatePlatformHeight();
               },

@@ -365,6 +365,69 @@ class _KeyboardState extends State<Keyboard> {
                                       ),
                                     ),
                                   )
+                                else if (k.highlight == Highlight.control)
+                                  SizedBox(
+                                    height: k.hitBox.height *
+                                        screenWidth *
+                                        (constraint.orientation == Orientation.landscape
+                                            ? preset.orientationFactor
+                                            : 1),
+                                    width: k.hitBox.width * screenWidth,
+                                    child: Center(
+                                      child: Observer(
+                                        builder: (context) {
+                                          return Icon(
+                                            Icons.keyboard_control_key,
+                                            color: status.controlLock == null
+                                                ? Theme.of(context).iconTheme.color
+                                                : Theme.of(context).colorScheme.primary,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                else if (k.highlight == Highlight.meta)
+                                  SizedBox(
+                                    height: k.hitBox.height *
+                                        screenWidth *
+                                        (constraint.orientation == Orientation.landscape
+                                            ? preset.orientationFactor
+                                            : 1),
+                                    width: k.hitBox.width * screenWidth,
+                                    child: Center(
+                                      child: Observer(
+                                        builder: (context) {
+                                          return Icon(
+                                            Icons.keyboard_command_key,
+                                            color: status.metaLock == null
+                                                ? Theme.of(context).iconTheme.color
+                                                : Theme.of(context).colorScheme.primary,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                else if (k.highlight == Highlight.alt)
+                                  SizedBox(
+                                    height: k.hitBox.height *
+                                        screenWidth *
+                                        (constraint.orientation == Orientation.landscape
+                                            ? preset.orientationFactor
+                                            : 1),
+                                    width: k.hitBox.width * screenWidth,
+                                    child: Center(
+                                      child: Observer(
+                                        builder: (context) {
+                                          return Icon(
+                                            Icons.keyboard_option_key,
+                                            color: status.altLock == null
+                                                ? Theme.of(context).iconTheme.color
+                                                : Theme.of(context).colorScheme.primary,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  )
                                 else if (k.highlight == Highlight.space)
                                   Stack(
                                     alignment: Alignment.center,

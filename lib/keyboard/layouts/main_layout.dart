@@ -56,14 +56,8 @@ class MainLayout extends StatelessWidget {
                           },
                         ),
                       ),
-                      Expanded(
-                        child: AutoRouter(
-                          builder: (_, child) {
-                            return KeyboardWrapper(
-                              child: child,
-                            );
-                          },
-                        ),
+                      const Expanded(
+                        child: AutoRouter(),
                       ),
                     ],
                   );

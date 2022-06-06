@@ -82,6 +82,21 @@ class RimeService implements InputService {
           ..setModifier(KEvent.modifierShift, state: false)
           ..shiftLock = null;
       }
+      if (_keyboardStatus.controlLock == false) {
+        _keyboardStatus
+          ..setModifier(KEvent.modifierControl, state: false)
+          ..controlLock = null;
+      }
+      if (_keyboardStatus.metaLock == false) {
+        _keyboardStatus
+          ..setModifier(KEvent.modifierMeta, state: false)
+          ..metaLock = null;
+      }
+      if (_keyboardStatus.altLock == false) {
+        _keyboardStatus
+          ..setModifier(KEvent.modifierAlt, state: false)
+          ..altLock = null;
+      }
     } else {
       final command = event.command;
       if (command != null) {
