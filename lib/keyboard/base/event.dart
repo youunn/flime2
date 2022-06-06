@@ -76,7 +76,7 @@ class KEvent {
   static const modifierShift = GtkKeyHelper.modifierShift;
   static const modifierControl = GtkKeyHelper.modifierControl;
   static const modifierAlt = GtkKeyHelper.modifierMod1;
-  static const modifierMeta = GtkKeyHelper.modifierMeta;
+  static const modifierMeta = 1 << 28;
 
   // TODO: const events and commands
 }
