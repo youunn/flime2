@@ -10,6 +10,7 @@ typedef struct SimpleStatus {
 } SimpleStatus;
 
 typedef struct SimpleContext {
+    char* preview;
     char* preedit;
     char** candidates;
     char** comments;

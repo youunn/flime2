@@ -150,6 +150,8 @@ class SimpleStatus extends ffi.Struct {
 }
 
 class SimpleContext extends ffi.Struct {
+  external ffi.Pointer<ffi.Char> preview;
+
   external ffi.Pointer<ffi.Char> preedit;
 
   external ffi.Pointer<ffi.Pointer<ffi.Char>> candidates;

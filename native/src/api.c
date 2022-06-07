@@ -109,44 +109,53 @@ void free_status(SimpleStatus *status) {
 SimpleContext *get_context() {
     RIME_STRUCT(RimeContext, context);
     if (!rime->get_context(session_id, &context)) return NULL;
+
     int count = context.menu.num_candidates;
-    if (count <= 0) {
-        rime->free_context(&context);
-        return NULL;
-    }
-
-    char *preedit;
-    if (!context.composition.preedit)
-        preedit = NULL;
-    else
-        preedit = strdup(context.composition.preedit);
-
-    char **candidates = malloc(count * sizeof(char *));
-    char **comments = malloc(count * sizeof(char *));
-
-    for (int i = 0; i < count; i++) {
-        RimeCandidate *rime_candidates = &context.menu.candidates[i];
-        if (!rime_candidates) {
-            candidates[i] = NULL;
-            comments[i] = NULL;
-        } else {
-            if (!rime_candidates->text)
-                candidates[i] = NULL;
-            else
-                candidates[i] = strdup(rime_candidates->text);
-
-            if (!rime_candidates->comment)
-                comments[i] = NULL;
-            else
-                comments[i] = strdup(rime_candidates->comment);
-        }
-    }
-
     SimpleContext *result = malloc(sizeof(SimpleContext));
-    result->preedit = preedit;
-    result->candidates = candidates;
-    result->comments = comments;
-    result->count = count;
+    if (count == 0) {
+        char *preview = NULL;
+        if (!!context.commit_text_preview) preview = strdup(context.commit_text_preview);
+        result->count = count;
+        result->preview = preview;
+        result->preedit = NULL;
+        result->candidates = NULL;
+        result->comments = NULL;
+    } else {
+        char *preview = NULL;
+        if (!!context.commit_text_preview) preview = strdup(context.commit_text_preview);
+        char *preedit;
+        if (!context.composition.preedit)
+            preedit = NULL;
+        else
+            preedit = strdup(context.composition.preedit);
+
+        char **candidates = malloc(count * sizeof(char *));
+        char **comments = malloc(count * sizeof(char *));
+
+        for (int i = 0; i < count; i++) {
+            RimeCandidate *rime_candidates = &context.menu.candidates[i];
+            if (!rime_candidates) {
+                candidates[i] = NULL;
+                comments[i] = NULL;
+            } else {
+                if (!rime_candidates->text)
+                    candidates[i] = NULL;
+                else
+                    candidates[i] = strdup(rime_candidates->text);
+
+                if (!rime_candidates->comment)
+                    comments[i] = NULL;
+                else
+                    comments[i] = strdup(rime_candidates->comment);
+            }
+        }
+
+        result->preedit = preedit;
+        result->candidates = candidates;
+        result->comments = comments;
+        result->count = count;
+        result->preview = preview;
+    }
 
     rime->free_context(&context);
 
@@ -162,5 +171,6 @@ void free_context(SimpleContext *context) {
     free(context->candidates);
     free(context->comments);
     free(context->preedit);
+    free(context->preview);
     free(context);
 }

@@ -141,7 +141,8 @@ class RimeService implements InputService {
     _keyboardStatus
       ..candidates = context.ref.candidates.toDartString(context.ref.count).toList()
       ..comments = context.ref.comments.toDartString(context.ref.count).toList()
-      ..preedit = context.ref.preedit.toDartString();
+      ..preedit = context.ref.preedit.toDartString()
+      ..preview = context.ref.preview.toDartString();
 
     rimeBridge.free_context(context);
   }

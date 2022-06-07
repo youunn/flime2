@@ -22,9 +22,12 @@ abstract class AbstractKeyboardStatus with Store {
 
   @observable
   List<String?> candidates = [];
-
   @observable
   List<String?> comments = [];
+  @observable
+  String? preedit;
+  @observable
+  String? preview;
 
   @observable
   bool? shiftLock;
@@ -34,9 +37,6 @@ abstract class AbstractKeyboardStatus with Store {
   bool? metaLock;
   @observable
   bool? altLock;
-
-  @observable
-  String? preedit;
 
   @observable
   int editorAction = 0;

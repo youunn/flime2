@@ -121,6 +121,38 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
     });
   }
 
+  late final _$preeditAtom =
+      Atom(name: 'AbstractKeyboardStatus.preedit', context: context);
+
+  @override
+  String? get preedit {
+    _$preeditAtom.reportRead();
+    return super.preedit;
+  }
+
+  @override
+  set preedit(String? value) {
+    _$preeditAtom.reportWrite(value, super.preedit, () {
+      super.preedit = value;
+    });
+  }
+
+  late final _$previewAtom =
+      Atom(name: 'AbstractKeyboardStatus.preview', context: context);
+
+  @override
+  String? get preview {
+    _$previewAtom.reportRead();
+    return super.preview;
+  }
+
+  @override
+  set preview(String? value) {
+    _$previewAtom.reportWrite(value, super.preview, () {
+      super.preview = value;
+    });
+  }
+
   late final _$shiftLockAtom =
       Atom(name: 'AbstractKeyboardStatus.shiftLock', context: context);
 
@@ -185,22 +217,6 @@ mixin _$KeyboardStatus on AbstractKeyboardStatus, Store {
     });
   }
 
-  late final _$preeditAtom =
-      Atom(name: 'AbstractKeyboardStatus.preedit', context: context);
-
-  @override
-  String? get preedit {
-    _$preeditAtom.reportRead();
-    return super.preedit;
-  }
-
-  @override
-  set preedit(String? value) {
-    _$preeditAtom.reportWrite(value, super.preedit, () {
-      super.preedit = value;
-    });
-  }
-
   late final _$editorActionAtom =
       Atom(name: 'AbstractKeyboardStatus.editorAction', context: context);
 
@@ -252,11 +268,12 @@ schemaId: ${schemaId},
 schemaName: ${schemaName},
 candidates: ${candidates},
 comments: ${comments},
+preedit: ${preedit},
+preview: ${preview},
 shiftLock: ${shiftLock},
 controlLock: ${controlLock},
 metaLock: ${metaLock},
 altLock: ${altLock},
-preedit: ${preedit},
 editorAction: ${editorAction}
     ''';
   }

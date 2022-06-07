@@ -49,6 +49,9 @@ gen-all:
     just gen-pigeon
     just gen-br
 
+clangd:
+    cd native; fd -p "x86_64/compile_commands.json$" -I -H .. --exec ln -sf {} ./compile_commands.json
+
 build-boost:
     #!/usr/bin/env bash
     if [[ ! -z "${BOOST_FOR_ANDROID_DIR}" && ! -z "${NDK_ROOT_DIR}" ]]; then

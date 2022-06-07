@@ -187,7 +187,7 @@ class Candidates extends StatelessWidget {
                   return Observer(
                     builder: (context) {
                       return Text(
-                        status.preedit ?? '',
+                        status.preedit ?? status.preview ?? '',
                         style: Theme.of(context).textTheme.bodySmall,
                       );
                     },
