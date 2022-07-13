@@ -55,11 +55,11 @@ clangd:
 build-boost:
     #!/usr/bin/env bash
     if [[ ! -z "${BOOST_FOR_ANDROID_DIR}" && ! -z "${NDK_ROOT_DIR}" ]]; then
-        [[ ! -d "${BOOST_FOR_ANDROID_DIR}"]] && mkdir -p ${BOOST_FOR_ANDROID_DIR}
-        [[ ! -z $(ls -A ${BOOST_FOR_ANDROID_DIR})]] && cd ${BOOST_FOR_ANDROID_DIR} && git clone https://github.com/moritz-wundke/Boost-for-Android .
         p=$(pwd)
-        cd $BOOST_FOR_ANDROID_DIR
-        ./build-android.sh $NDK_ROOT_DIR --boost=${BOOST_PREBUILD_VERSION_NUMBER}
+        [[ ! -d "${BOOST_FOR_ANDROID_DIR}" ]] && mkdir -p ${BOOST_FOR_ANDROID_DIR}
+        [[ -z $(ls -A ${BOOST_FOR_ANDROID_DIR}) ]] && cd ${BOOST_FOR_ANDROID_DIR} && git clone https://github.com/moritz-wundke/Boost-for-Android .
+        cd ${BOOST_FOR_ANDROID_DIR}
+        ./build-android.sh ${NDK_ROOT_DIR} --boost=${BOOST_PREBUILD_VERSION_NUMBER}
         cd $p
         just cp-boost
     else
