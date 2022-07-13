@@ -233,7 +233,7 @@ final logicalKeyToX11Map = <LogicalKeyboardKey, int>{
   LogicalKeyboardKey.braceLeft: 0x7b,
   LogicalKeyboardKey.braceRight: 0x7d,
   LogicalKeyboardKey.bar: 0x7c,
-  LogicalKeyboardKey.colon: 0x3b,
+  LogicalKeyboardKey.colon: 0x3a,
   LogicalKeyboardKey.quote: 0x22,
   LogicalKeyboardKey.less: 0x3c,
   LogicalKeyboardKey.greater: 0x3e,
